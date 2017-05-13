@@ -36,8 +36,6 @@ def appendTitleCard(titleCard, T):
 	# Inputs:
 	# 			titleCard: title card. Get from getAtomsAndTitleCard(N, inputFileName)
 	# 			T: temperature to perform freq calc at. User input
-
-
 	# find opt location
 	slicePt = titleCard.find("opt")
 	# Remove opt...
