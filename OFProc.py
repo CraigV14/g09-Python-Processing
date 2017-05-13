@@ -44,19 +44,6 @@ def getOptCoords(N, outputFileName):
 	parsedCoords = [nums[i][3]+" "+nums[i][4]+" "+nums[i][5]+"\n" for i in range(N)]
 	return parsedCoords
 
-def concatOptCoordsWithAtoms(atoms, freezeList, optCoords,N):
-	# make the list for a frequency calculation
-	# mashes together the list of atoms, coordinates, and handles the case where atoms are frozen
-	#
-	freqInput=[]
-	for i in range(N):
-		if freezeList[i] == -1:
-			atoms[i] = atoms[i][0:2]+"(Iso=100000000000)          "
-		else:
-			atoms[i] = atoms[i][0:3]
-		freqInput.append(atoms[i]+"          "+optCoords[i])
-	return freqInput
-
 def getFreeE(outputFileName):
 	lookup = ' Sum of electronic and thermal Free Energies='
 	with open(outputFileName) as f:
