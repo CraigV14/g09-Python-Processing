@@ -6,6 +6,7 @@ N = config.N
 inputFileName = config.inputFileName
 
 def getTitleCard():
+	# Returns the title card as a list where each element is an option
 	lookup = "#"
 	with open(inputFileName) as f:
 		for num, line in enumerate(f, 1):
@@ -15,9 +16,12 @@ def getTitleCard():
 		location-=1
 		f.seek(0)
 		titleCard = f.readlines()[location]
+		print titleCard
+		titleCard = titleCard.split(' ')
 	return titleCard
 
 def getAtomsAndInitialCoords():
+	# Returns the list of atoms and initial coordinates
 	lookup = "#"
 	with open(inputFileName) as f:
 		for num, line in enumerate(f, 1):
@@ -38,4 +42,4 @@ def getRedundantCoords():
 	rCoords = 1
 	return rCoords
 
-print getAtomsAndInitialCoords()
+print getTitleCard()

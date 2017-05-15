@@ -5,6 +5,11 @@ inputFileName = 'SiF3Oopt.gjf'
 # Output file name
 outPutFileName = 'SiF3Oopt.log'
 
+# Number of frozen atoms
+N_Freeze = 0
+
+
+
 # Go and find N
 
 #String to find

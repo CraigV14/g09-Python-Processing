@@ -3,15 +3,13 @@
 import re
 import config
 
-# Set N and outputFileName from config
+# Set N and outputFileName from config as module wide variables
+N_Frozen = config.N_Freeze
 N = config.N
 outputFileName = config.outPutFileName
 
 def getOptCoords():
 	# Searches the output file (outputFileName) and extracts the x,y,z positions of the optimized coordinates
-	# Inputs:
-	# 			N: number of atoms
-	# 			outputFileName: name of the output file
 
 	#Search string to find location of optimized coordinates
 	lookup = " Number     Number       Type             X           Y           Z"
@@ -34,6 +32,7 @@ def getOptCoords():
 	return parsedCoords
 
 def getFreeE():
+	# Returns the free energy after a frequency calculation
 	lookup = ' Sum of electronic and thermal Free Energies='
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
@@ -45,3 +44,20 @@ def getFreeE():
 	freeE = re.findall(r"[-+]?\d*\.\d+|\d+", Elist)
 	freeE = float(freeE[0])
 	return freeE
+
+# Future functions to add
+
+def getHessian():
+	hessian = 1
+	return hessian
+
+def removeFixedRotAndTrans_q():
+	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
+	appendedFreeE = 1
+	return appendedFreeE
+
+def getNoImagFreq():
+	noImFreq = 1
+	if noImFreq > 1 or noImFreq == 0:
+		print 'WARNING, INCORRECT NUMBER OF IMAGINARY FREQUENCIES'
+	return noImFreq
