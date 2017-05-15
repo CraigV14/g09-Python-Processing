@@ -1,24 +1,13 @@
 #RULES:
 # opt needs to be the last entry in the 1st input file
 import re
+import config
 
-def setN(outPutFileName):
-	#Search the output file for the number of atoms used
+# Set N and outputFileName from config
+N = config.N
+outputFileName = config.outPutFileName
 
-	#String to find
-	lookup =" NAtoms"
-	with open(outPutFileName) as f:
-		for num, line in enumerate(f, 1):
-			if lookup in line:
-				location = num
-				break
-		f.seek(0)
-		Nlist = f.readlines()[location-1]
-	nums = re.findall(r'\d+', Nlist)
-	N = int(nums[0])
-	return N
-
-def getOptCoords(N, outputFileName):
+def getOptCoords():
 	# Searches the output file (outputFileName) and extracts the x,y,z positions of the optimized coordinates
 	# Inputs:
 	# 			N: number of atoms
@@ -44,7 +33,7 @@ def getOptCoords(N, outputFileName):
 	parsedCoords = [nums[i][3]+" "+nums[i][4]+" "+nums[i][5]+"\n" for i in range(N)]
 	return parsedCoords
 
-def getFreeE(outputFileName):
+def getFreeE():
 	lookup = ' Sum of electronic and thermal Free Energies='
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
@@ -56,5 +45,3 @@ def getFreeE(outputFileName):
 	freeE = re.findall(r"[-+]?\d*\.\d+|\d+", Elist)
 	freeE = float(freeE[0])
 	return freeE
-
-
