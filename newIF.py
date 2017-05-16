@@ -13,7 +13,7 @@ def makeFreqInputFile(freqInput, titleCard,tCardLocation):
 	inputFile[tCardLocation+5:tCardLocation+5+N] = freqInput
 
 
-	with open('freqInput.gjf', 'w') as f:
+	with open(inputFileName, 'w') as f:
 		for i in range(len(inputFile)):
 			f.write(inputFile[i])
 
