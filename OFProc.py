@@ -57,7 +57,7 @@ def removeFixedRotAndTrans_q():
 	return appendedFreeE
 
 def getNoImagFreq():
-	noImFreq = 1
+	noImFreq = 0
 	if noImFreq > 1 or noImFreq == 0:
 		print 'WARNING, INCORRECT NUMBER OF IMAGINARY FREQUENCIES'
 	return noImFreq
