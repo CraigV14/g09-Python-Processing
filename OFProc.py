@@ -54,6 +54,7 @@ import numpy as np
 
 
 def getHessian(outPutFileName, Numcoordinates, type):
+	# returns hessian as a numpy array
     f = open(outPutFileName, "r")
 
     hessian_data = []
