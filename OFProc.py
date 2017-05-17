@@ -48,11 +48,6 @@ def getFreeE():
 	freeE = float(freeE[0])
 	return freeE
 
-# Future functions to add
-
-import re
-import numpy as np
-
 
 def getHessian(outPutFileName, Numcoordinates, type):
 	# returns hessian as a numpy array
@@ -105,6 +100,8 @@ def ifNormal(OutPutFileName):
 		normal = 0
     return normal
 
+
+# Future functions to add
 
 def removeFixedRotAndTrans_q():
 	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
