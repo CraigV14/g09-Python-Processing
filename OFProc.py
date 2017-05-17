@@ -94,7 +94,7 @@ def getHessian(outPutFileName, Numcoordinates, type):
 
 
 def ifNormal(OutPutFileName):
-
+    # returns 1 if the log file has terminated normally, otherwise returns 0
     split_line = []
     number_lines = sum(1 for line in open(outPutFileName))
     line = linecache.getline(outPutFileName, number_lines)
