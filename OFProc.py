@@ -2,6 +2,8 @@
 # opt needs to be the last entry in the 1st input file
 import re
 import config
+import numpy as np
+
 
 # Set N and outputFileName from config as module wide variables
 N_Frozen = config.N_Freeze
@@ -47,9 +49,47 @@ def getFreeE():
 
 # Future functions to add
 
-def getHessian():
-	hessian = 1
-	return hessian
+import re
+import numpy as np
+
+
+def getHessian(outPutFileName, Numcoordinates, type):
+    f = open(outPutFileName, "r")
+
+    hessian_data = []
+    for line in f:
+        if "Force constants in " + type + " coordinates:" in line:
+            for line in f:
+                if "Leave Link" in line:
+                    break
+                line1 = line.replace("D", "E")
+                hessian_data.append(line1.split())
+
+    n = Numcoordinates
+    o = 5  # number of columns that gaussian prints ( current version = 5) , not checked for smaller number of coordinates (rare)
+    # variables used to parse through data
+    m = 0
+    p = n / o + 1
+    temp = 0
+    q = 0
+
+    hessian = np.zeros(shape=(n, n))
+
+    for i in range(0, n):
+        p = i / o
+        if p < 2:
+            q = 0
+        else:
+            q = p - 1
+        if m % o == 0:
+            temp = temp + q * o
+        for j in range(m, n):
+            hessian[j][m] = float(hessian_data[(n) * p - temp + p + j + 1 - p * o][m + 1 - o * p])
+            hessian[m][j] = hessian[j][m]
+        m = m + 1
+
+    return hessian
+
 
 def removeFixedRotAndTrans_q():
 	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
