@@ -3,6 +3,7 @@
 import re
 import config
 import numpy as np
+import linecache
 
 
 # Set N and outputFileName from config as module wide variables
@@ -92,6 +93,19 @@ def getHessian(outPutFileName, Numcoordinates, type):
     return hessian
 
 
+def ifNormal(OutPutFileName):
+
+    split_line = []
+    number_lines = sum(1 for line in open(outPutFileName))
+    line = linecache.getline(outPutFileName, number_lines)
+    split_line.append(line.split())
+    if(split_line[0][0]=="Normal"):
+		normal = 1
+	else:
+		normal = 0
+    return normal
+
+
 def removeFixedRotAndTrans_q():
 	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
 	appendedFreeE = 1
@@ -102,3 +116,6 @@ def getNoImagFreq():
 	if noImFreq > 1 or noImFreq == 0:
 		print 'WARNING, INCORRECT NUMBER OF IMAGINARY FREQUENCIES'
 	return noImFreq
+
+
+
