@@ -1,0 +1,15 @@
+Job details for: testFiles/SiF3Oopt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/gen nosymm geom=connectivity opt
+
+Optimized coordinates:
+Si    -1.752361 0.380588 -1.193552
+O    -1.176141 1.123831 0.175682
+F    -1.195433 -1.119540 -1.151769
+F    -1.244818 1.098738 -2.532962
+F    -3.354018 0.351855 -1.243545
+
+Free Energy: Frequency calculation not performed
+-------------------------------------------------
