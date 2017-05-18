@@ -2,10 +2,10 @@ import re
 import config
 
 # Set N and inputFileName from config
-N = config.N
+N = config.setN()
 inputFileName = config.inputFileName
 
-def getTitleCard():
+def getRoute():
 	# Returns the title card as a list where each element is an option
 	lookup = "#"
 	with open(inputFileName) as f:
@@ -16,7 +16,6 @@ def getTitleCard():
 		location-=1
 		f.seek(0)
 		titleCard = f.readlines()[location]
-		print titleCard
 		titleCard = titleCard.split(' ')
 	return titleCard
 
@@ -32,7 +31,6 @@ def getAtomsAndInitialCoords():
 		f.seek(0)
 		inputList = f.readlines()[location+5:location+5+N]
 		inputList = [i.split() for i in inputList]
-		print inputList[1][2]
 		atomList = [inputList[i][0] for i in range(N)]
 		iniCoords = [inputList[i][1] for i in range(N)]
 
@@ -41,5 +39,3 @@ def getAtomsAndInitialCoords():
 def getRedundantCoords():
 	rCoords = 1
 	return rCoords
-
-print getTitleCard()

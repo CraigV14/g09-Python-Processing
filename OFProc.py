@@ -1,5 +1,5 @@
-#RULES:
-# opt needs to be the last entry in the 1st input file
+# RULES:
+# only freeze atoms through internal coordinates
 import re
 import config
 import numpy as np
@@ -8,8 +8,8 @@ import linecache
 
 # Set N and outputFileName from config as module wide variables
 N_Frozen = config.N_Freeze
-N = config.N
-outputFileName = config.outPutFileName
+N = config.setN()
+outputFileName = config.outputFileName
 
 def getOptCoords():
 	# Searches the output file (outputFileName) and extracts the x,y,z positions of the optimized coordinates
@@ -18,6 +18,7 @@ def getOptCoords():
 	lookup = " Number     Number       Type             X           Y           Z"
 	nums = []
 	#Open file, search for lookup, get line number
+	location = -2
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
 			if lookup in line:
@@ -36,6 +37,8 @@ def getOptCoords():
 
 def getFreeE():
 	# Returns the free energy after a frequency calculation
+	# A value of -1 means the free energy was not found (no freq calc)
+	location = -1
 	lookup = ' Sum of electronic and thermal Free Energies='
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
@@ -44,63 +47,94 @@ def getFreeE():
 		f.seek(0)
 		Elist = f.readlines()[location-1]
 
-	freeE = re.findall(r"[-+]?\d*\.\d+|\d+", Elist)
-	freeE = float(freeE[0])
+	# Check if free energy exists (i.e. there was an actual freq calculation)
+	if location != -1:
+		freeE = re.findall(r"[-+]?\d*\.\d+|\d+", Elist)
+		freeE = float(freeE[0])
+	else:
+		freeE = -1
 	return freeE
 
 
-def getHessian(outPutFileName, Numcoordinates, type):
+def getHessian(Numcoordinates, type):
 	# returns hessian as a numpy array
-    f = open(outPutFileName, "r")
+	#
+	f = open(outputFileName, "r")
+	hessian_data = []
+	for line in f:
+		if "Force constants in " + type + " coordinates:" in line:
+			for line in f:
+				if "Leave Link" in line:
+					break
+				line1 = line.replace("D", "E")
+				hessian_data.append(line1.split())
+	f.close()
+	n = Numcoordinates
+	o = 5  # number of columns that gaussian prints ( current version = 5) , not checked for smaller number of coordinates (rare)
+	# variables used to parse through data
+	m = 0
+	p = n / o + 1
+	temp = 0
+	q = 0
 
-    hessian_data = []
-    for line in f:
-        if "Force constants in " + type + " coordinates:" in line:
-            for line in f:
-                if "Leave Link" in line:
-                    break
-                line1 = line.replace("D", "E")
-                hessian_data.append(line1.split())
+	hessian = np.zeros(shape=(n, n))
 
-    n = Numcoordinates
-    o = 5  # number of columns that gaussian prints ( current version = 5) , not checked for smaller number of coordinates (rare)
-    # variables used to parse through data
-    m = 0
-    p = n / o + 1
-    temp = 0
-    q = 0
+	for i in range(0, n):
+		p = i / o
+		if p < 2:
+			q = 0
+		else:
+			q = p - 1
+		if m % o == 0:
+			temp = temp + q * o
+		for j in range(m, n):
+			hessian[j][m] = float(hessian_data[(n) * p - temp + p + j + 1 - p * o][m + 1 - o * p])
+			hessian[m][j] = hessian[j][m]
+		m = m + 1
 
-    hessian = np.zeros(shape=(n, n))
-
-    for i in range(0, n):
-        p = i / o
-        if p < 2:
-            q = 0
-        else:
-            q = p - 1
-        if m % o == 0:
-            temp = temp + q * o
-        for j in range(m, n):
-            hessian[j][m] = float(hessian_data[(n) * p - temp + p + j + 1 - p * o][m + 1 - o * p])
-            hessian[m][j] = hessian[j][m]
-        m = m + 1
-
-    return hessian
+	return hessian
 
 
-def ifNormal(OutPutFileName):
-    # returns 1 if the log file has terminated normally, otherwise returns 0
-    split_line = []
-    number_lines = sum(1 for line in open(outPutFileName))
-    line = linecache.getline(outPutFileName, number_lines)
-    split_line.append(line.split())
-    if(split_line[0][0]=="Normal"):
-		normal = 1
+def ifNormal():
+# returns 1 if the log file has terminated normally, otherwise returns 0
+	split_line = []
+	number_lines = sum(1 for line in open(outputFileName))
+	line = linecache.getline(outputFileName, number_lines)
+	split_line.append(line.split())
+	if(split_line[0][0]=="Normal"):
+		normal = True
 	else:
-		normal = 0
-    return normal
+		normal = False
+	return normal
 
+def getModRedundantCoords():
+	lookup = ' The following ModRedundant input section has been read:'
+	location = -2
+	with open(outputFileName) as f:
+		for num, line in enumerate(f, 1):
+			if lookup in line:
+				location = num
+				break
+		#Increment one more to get indexing right
+		location += 1
 
+		if location != -1:
+			i = 0
+			MRCoords = []
+			# read in modredundant coords until theres no more (entry is NAtoms=)
+			while True:
+				f.seek(0)
+				readLine = f.readlines()[location+i]
+				MRCoords.append(readLine.split())
+				# Criteria to exit (100000 iterations force exits, which means something went wrong)
+				if MRCoords[i][0] == 'NAtoms=' or i > 100000:
+					# Time to exit, but the last line read in isn't what we want to delete it
+					del MRCoords[-1]
+					break
+				i += 1
+		else:
+			MRCoords = 'No Modredundant coordinates read'
+	return MRCoords
 # Future functions to add
 
 def removeFixedRotAndTrans_q():
@@ -113,6 +147,5 @@ def getNoImagFreq():
 	if noImFreq > 1 or noImFreq == 0:
 		print 'WARNING, INCORRECT NUMBER OF IMAGINARY FREQUENCIES'
 	return noImFreq
-
 
 

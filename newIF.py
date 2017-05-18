@@ -1,6 +1,6 @@
 import config
 
-N = config.N
+N = config.setN()
 inputFileName = config.inputFileName
 
 def makeFreqInputFile(freqInput, titleCard,tCardLocation):
