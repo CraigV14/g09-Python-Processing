@@ -1,33 +1,41 @@
 # RULES:
 # only freeze atoms through internal coordinates
 import re
+import IFProc
 import config
 import numpy as np
 import linecache
 
 
 # Set N and outputFileName from config as module wide variables
-N_Frozen = config.N_Freeze
 N = config.setN()
 outputFileName = config.outputFileName
 
-def getOptCoords():
-	# Searches the output file (outputFileName) and extracts the x,y,z positions of the optimized coordinates
-
-	#Search string to find location of optimized coordinates
-	lookup = " Number     Number       Type             X           Y           Z"
-	nums = []
-	#Open file, search for lookup, get line number
-	location = -2
+def findLocation(lookup,firstInstance):
+	# Returns the 0 indexed location for a line in the output file
+	# Inputs:
+	# 			lookup: string. phrase to search for
+	# 			firstInstance: boolean. If true: find location of the first instance
+	# 									If false: find location of last instance
+	# Location of -1 means phrase is not found
+	location = -1
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
 			if lookup in line:
 				location = num
-		#Increment one more to get indexing right
-		location += 1
-		# Jump to location of
-		f.seek(0)
-		#Read in coords
+				if firstInstance is True:
+					break
+	return location
+
+def getOptCoords():
+	# Searches the output file (outputFileName) and extracts the x,y,z positions of the optimized coordinates as a space
+	# separated list of strings
+
+	#Search string to find location of optimized coordinates
+	lookup = " Number     Number       Type             X           Y           Z"
+	#Open file, search for lookup, get line number
+	location = findLocation(lookup,False) + 1
+	with open(outputFileName) as f:
 		coords = f.readlines()[location:location+N]
 	# Extract all numbers
 	nums = [re.findall(r"[-+]?\d*\.\d+|\d+",x) for x in coords]
@@ -38,13 +46,9 @@ def getOptCoords():
 def getFreeE():
 	# Returns the free energy after a frequency calculation
 	# A value of -1 means the free energy was not found (no freq calc)
-	location = -1
 	lookup = ' Sum of electronic and thermal Free Energies='
+	location = findLocation(lookup,False)
 	with open(outputFileName) as f:
-		for num, line in enumerate(f, 1):
-			if lookup in line:
-				location = num
-		f.seek(0)
 		Elist = f.readlines()[location-1]
 
 	# Check if free energy exists (i.e. there was an actual freq calculation)
@@ -54,7 +58,6 @@ def getFreeE():
 	else:
 		freeE = -1
 	return freeE
-
 
 def getHessian(Numcoordinates, type):
 	# returns hessian as a numpy array
@@ -94,7 +97,6 @@ def getHessian(Numcoordinates, type):
 
 	return hessian
 
-
 def ifNormal():
 # returns 1 if the log file has terminated normally, otherwise returns 0
 	split_line = []
@@ -108,16 +110,11 @@ def ifNormal():
 	return normal
 
 def getModRedundantCoords():
+	# Read in all the modredundant coordinates as a list of string.
+	# A value of -1 means no modredundant coordinates have been detected
 	lookup = ' The following ModRedundant input section has been read:'
-	location = -2
+	location = findLocation(lookup,True)
 	with open(outputFileName) as f:
-		for num, line in enumerate(f, 1):
-			if lookup in line:
-				location = num
-				break
-		#Increment one more to get indexing right
-		location += 1
-
 		if location != -1:
 			i = 0
 			MRCoords = []
@@ -133,7 +130,7 @@ def getModRedundantCoords():
 					break
 				i += 1
 		else:
-			MRCoords = 'No Modredundant coordinates read'
+			MRCoords = -1
 	return MRCoords
 # Future functions to add
 
@@ -143,9 +140,29 @@ def removeFixedRotAndTrans_q():
 	return appendedFreeE
 
 def getNoImagFreq():
-	noImFreq = 0
-	if noImFreq > 1 or noImFreq == 0:
-		print 'WARNING, INCORRECT NUMBER OF IMAGINARY FREQUENCIES'
+	with open(outputFileName) as f:
+		# Read in the whole file b/c there's no great way otherwise
+		line = f.read()
+
+	location = line.find('\NImag')
+	if location == -1:
+		noImFreq = -1
+	else:
+		noImFreq = int(line[location+7])
+	# Clear line since it reads in the whole damn file
+	del line
 	return noImFreq
 
-
+def setNoFrozen():
+	N_Freeze = 0
+	#	See if theres any MR coordinates
+	MR = getModRedundantCoords()
+	if MR != -1:
+		for i in range(len(MR)):
+			if MR[i][0] == 'X':
+				if MR[i][3] == 'F':
+					N_Freeze += 1
+	# Now see if theres any frozen cartesian coordinates if theres no MR coords
+	else:
+		N_Freeze = IFProc.getFrozenCartNo()
+	return N_Freeze
