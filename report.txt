@@ -1,15 +1,265 @@
-Job details for: testFiles/SiF3Oopt.log
+Job details for: C:\Users\Craig\Box Sync\UCSB2\Research\Fracture Calculation2\Hydrogen Extraction\C2H3\C2H3opt.log
 
 Normal termination? True
 
-Route Card: #p wb97xd/gen nosymm geom=connectivity opt
+Route Card: #p wb97xd/TZVP nosymm geom=connectivity opt freq temp=373.15
+
+Optimized coordinates:
+C    -0.294930 0.350324 -1.438538
+C    1.004021 0.274002 -1.438528
+H    -1.055579 1.116820 -1.438528
+H    1.526155 -0.679196 -1.438548
+H    1.631050 1.167949 -1.438507
+
+Free Energy: -77.89103 kJ/molSpin contamination:
+   Before: 0.7638
+   After: 0.7501
+-------------------------------------------------
+Job details for: C:\Users\Craig\Box Sync\UCSB2\Research\Fracture Calculation2\Hydrogen Extraction\C3H7\C3H7opt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/TZVP nosymm geom=connectivity opt freq temp=373.15
+
+Optimized coordinates:
+C    -1.777388 2.102007 0.041693
+C    -0.307032 1.972575 0.210215
+H    -2.095497 3.144972 0.007582
+H    -2.118809 1.610965 -0.876292
+H    -2.324885 1.622003 0.867290
+C    0.360550 0.657274 0.033587
+H    0.245714 2.790937 0.655119
+H    1.447629 0.745328 0.047273
+H    0.080076 -0.051961 0.827025
+H    0.068854 0.185372 -0.911607
+
+Free Energy: -118.4257 kJ/molSpin contamination:
+   Before: 0.7547
+   After: 0.7500
+-------------------------------------------------
+Job details for: C:\Users\Craig\Box Sync\UCSB2\Research\Fracture Calculation2\Hydrogen Extraction\C3H8\C3H8opt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/TZVP nosymm geom=connectivity opt freq temp=373.15
+
+Optimized coordinates:
+C    -1.748869 2.105936 -0.000022
+C    -0.224388 2.094885 -0.000025
+H    -2.143803 3.123718 0.000021
+H    -2.143697 1.594824 -0.881738
+H    -2.143694 1.594752 0.881654
+C    0.351959 0.683402 -0.000079
+H    0.143941 2.638163 -0.874802
+H    0.143946 2.638098 0.874789
+H    1.443616 0.695876 -0.000089
+H    0.023883 0.127090 0.881687
+H    0.023866 0.127151 -0.881878
+
+Free Energy: -119.076183 kJ/molSpin contamination:
+   Before: No unpaired electrons
+   After: No unpaired electrons
+-------------------------------------------------
+Job details for: C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3O/freq/freqSiF3Oopt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/gen nosymm geom=connectivity freq temp=373.15
 
 Optimized coordinates:
 Si    -1.752361 0.380588 -1.193552
 O    -1.176141 1.123831 0.175682
-F    -1.195433 -1.119540 -1.151769
-F    -1.244818 1.098738 -2.532962
-F    -3.354018 0.351855 -1.243545
+F(Iso=100000000000)    -1.195433 -1.119540 -1.151769
+F(Iso=100000000000)    -1.244818 1.098738 -2.532962
+F(Iso=100000000000)    -3.354018 0.351855 -1.243545
 
-Free Energy: Frequency calculation not performed
+Free Energy: -664.398737 kJ/molSpin contamination:
+   Before: 0.7528
+   After: 0.7500
+-------------------------------------------------
+Job details for: C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3OH/freq/freqSiF3OHopt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/gen nosymm geom=connectivity freq temp=373.15
+
+Optimized coordinates:
+Si    -1.742775 0.400722 -1.178414
+O    -1.196862 1.254934 0.079489
+F(Iso=100000000000)    -1.195433 -1.119540 -1.151769
+F(Iso=100000000000)    -1.244818 1.098738 -2.532962
+F(Iso=100000000000)    -3.354018 0.351855 -1.243545
+H    -1.292218 0.915350 0.968303
+
+Free Energy: -665.09691 kJ/mol
+Spin contamination:
+   Before: No unpaired electrons
+   After: No unpaired electrons
+-------------------------------------------------
+Job details for: C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3OH/freq/freqSiF3OHopt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/gen nosymm geom=connectivity freq temp=373.15
+
+Optimized coordinates:
+Si    -1.742775 0.400722 -1.178414
+   O    -1.196862 1.254934 0.079489
+   F(Iso=100000000000)    -1.195433 -1.119540 -1.151769
+   F(Iso=100000000000)    -1.244818 1.098738 -2.532962
+   F(Iso=100000000000)    -3.354018 0.351855 -1.243545
+   H    -1.292218 0.915350 0.968303
+
+Free Energy: -665.09691 kJ/mol
+Spin contamination:
+   Before: No unpaired electrons
+   After: No unpaired electrons
+-------------------------------------------------
+Job details for: C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3OH/freq/freqSiF3OHopt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/gen nosymm geom=connectivity freq temp=373.15
+
+Optimized coordinates:
+Si   -1.742775 0.400722 -1.178414
+O   -1.196862 1.254934 0.079489
+F(Iso=100000000000)   -1.195433 -1.119540 -1.151769
+F(Iso=100000000000)   -1.244818 1.098738 -2.532962
+F(Iso=100000000000)   -3.354018 0.351855 -1.243545
+H   -1.292218 0.915350 0.968303
+
+Free Energy: -665.09691 kJ/mol
+Spin contamination:
+   Before: No unpaired electrons
+   After: No unpaired electrons
+-------------------------------------------------
+Job details for: C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3OH/freq/freqSiF3OHopt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/gen nosymm geom=connectivity freq temp=373.15
+
+Optimized coordinates:
+Si  -1.742775 0.400722 -1.178414
+    O  -1.196862 1.254934 0.079489
+    F(Iso=100000000000)  -1.195433 -1.119540 -1.151769
+    F(Iso=100000000000)  -1.244818 1.098738 -2.532962
+    F(Iso=100000000000)  -3.354018 0.351855 -1.243545
+    H  -1.292218 0.915350 0.968303
+    
+Free Energy: -665.09691 kJ/mol
+Spin contamination:
+   Before: No unpaired electrons
+   After: No unpaired electrons
+-------------------------------------------------
+Job details for: C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3OH/freq/freqSiF3OHopt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/gen nosymm geom=connectivity freq temp=373.15
+
+Optimized coordinates:
+Si  -1.742775 0.400722 -1.178414
+    O  -1.196862 1.254934 0.079489
+    F(Iso=100000000000)  -1.195433 -1.119540 -1.151769
+    F(Iso=100000000000)  -1.244818 1.098738 -2.532962
+    F(Iso=100000000000)  -3.354018 0.351855 -1.243545
+    H  -1.292218 0.915350 0.968303
+    
+Free Energy: -665.09691 kJ/mol
+Spin contamination:
+   Before: No unpaired electrons
+   After: No unpaired electrons
+-------------------------------------------------
+Job details for: C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3OH/freq/freqSiF3OHopt.log
+
+Normal termination? True
+
+Route Card: #p wb97xd/gen nosymm geom=connectivity freq temp=373.15
+
+Optimized coordinates:
+Si  -1.742775 0.400722 -1.178414
+    O  -1.196862 1.254934 0.079489
+    F(Iso=100000000000)  -1.195433 -1.119540 -1.151769
+    F(Iso=100000000000)  -1.244818 1.098738 -2.532962
+    F(Iso=100000000000)  -3.354018 0.351855 -1.243545
+    H  -1.292218 0.915350 0.968303
+    
+Free Energy: -665.09691 kJ/mol
+Spin contamination:
+   Before: No unpaired electrons
+   After: No unpaired electrons
+-------------------------------------------------
+Job details for: C:/Users/Craig/Box Sync/UCSB2/Research/HomolysisPaper/3IV/3IVopt.log
+
+Normal termination? False
+
+Route Card: #p opt wb97xd/gen nosymm geom=connectivity freq temp=373.15
+
+Optimized coordinates:
+C  0.282609 4.786987 4.230719
+    C  0.335403 6.308622 4.407998
+    C  -0.929867 6.942348 3.806521
+    C  -1.033823 6.559401 2.327062
+    H  -0.443194 4.319991 4.905105
+    H  1.242873 4.277492 4.307859
+    H  0.440662 6.568179 5.465026
+    H  1.214261 6.712502 3.896447
+    H  -1.810043 6.581393 4.348676
+    H  -0.917880 8.029809 3.922933
+    H  -2.001500 6.747739 1.863020
+    H  -0.234629 7.011886 1.729637
+    Cr  -0.557199 4.641168 2.438162
+    O  0.538039 4.112786 1.126802
+    O  -1.988252 3.567459 2.438535
+    O  -1.153606 2.208571 0.280586
+    Si  -2.332789 2.369447 1.401958
+    Si  0.290671 2.936519 0.038489
+    F  -3.734163 2.646448 0.647150
+    F  0.329964 3.527670 -1.464965
+    F  1.457367 1.821975 0.120661
+    F  -2.507359 0.965514 2.182425
+    
+Zero Point Energy (Hartrees): -2406.09099502
+Free Energy: -2406.018898 kJ/mol
+Spin contamination:
+   Before: 2.1041
+   After: 2.0046
+-------------------------------------------------
+Job details for: C:/Users/Craig/Box Sync/UCSB2/Research/HomolysisPaper/5III/5IIIopt.log
+
+Normal termination? False
+
+Route Card: #p opt wb97xd/gen nosymm geom=connectivity freq temp=373.15
+
+Optimized coordinates:
+C  1.528078 5.912094 3.253659
+    C  0.922820 6.740705 2.392095
+    C  -1.498566 5.179596 4.817229
+    C  -2.098765 6.049007 3.993224
+    H  -1.798474 7.090258 3.952572
+    H  -2.963407 5.751850 3.410183
+    H  -0.690973 5.486485 5.472757
+    H  -1.865960 4.164074 4.912581
+    H  1.479119 6.076387 4.324405
+    H  2.159562 5.106454 2.896001
+    H  1.051344 6.616637 1.322892
+    H  0.362203 7.603126 2.735552
+    Cr  -0.544398 4.750640 2.570255
+    O  0.498377 4.098078 1.136279
+    O  -1.982338 3.537192 2.403172
+    O  -1.146981 2.153620 0.241757
+    Si  -2.306122 2.347556 1.381730
+    Si  0.278766 2.937574 0.055562
+    F  -3.720513 2.588911 0.620306
+    F  -2.489208 0.931405 2.156420
+    F  1.468770 1.833621 0.117170
+    F  0.332118 3.521819 -1.460221
+    
+Zero Point Energy (Hartrees): -2406.09970173
+Free Energy: -2406.036471 kJ/mol
+Spin contamination:
+   Before: 6.0114
+   After: 6.0000
 -------------------------------------------------

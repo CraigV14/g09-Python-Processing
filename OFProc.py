@@ -166,3 +166,30 @@ def setNoFrozen():
 	else:
 		N_Freeze = IFProc.getFrozenCartNo()
 	return N_Freeze
+
+def getSpinAnnihilation():
+	lookup = ' Annihilation of the first spin contaminant:'
+	location = findLocation(lookup,False)
+	if location != -1:
+		with open(outputFileName) as f:
+			f.seek(0)
+			readLine = f.readlines()[location]
+		readLine = readLine.split()
+		s2 = readLine[3][0:-1]
+		s2a = readLine[5]
+	else:
+		s2 = -1
+		s2a = -1
+	return s2,s2a
+def getZeroPtEnergy():
+	location = -1
+	lookup = ' SCF Done:'
+	with open(outputFileName) as f:
+		for num, line in enumerate(f, 1):
+			if lookup in line[0:10]:
+				location = num
+		f.seek(0)
+		readLine = f.readlines()[location-1]
+	readLine = readLine.split()
+	zeroPtEnergy = float(readLine[4])
+	return zeroPtEnergy

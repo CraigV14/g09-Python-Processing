@@ -1,10 +1,10 @@
 import config
 
-config.outputFileName = 'testFiles/SiF3Oopt.log'
-config.inputFileName = 'testFiles/SiF3Oopt.gjf'
+config.outputFileName = "C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3OH/freq/freqSiF3OHopt.log"
+# config.inputFileName = "C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3O/freq/freqSiF3Oopt.log"
 
 import IFProc
 import OFProc
 
-print OFProc.setNoFrozen()
+print OFProc.getZeroPtEnergy()
 
