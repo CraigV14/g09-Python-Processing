@@ -132,6 +132,23 @@ def getModRedundantCoords():
 		else:
 			MRCoords = -1
 	return MRCoords
+
+def totalpartition(V):
+	#returns the natural log of the total partition function ( returns the bot partition function for V = -1 and V = 0 partition function for V = 0)
+	lookup = 'Ln(Q)'
+	split_line = []
+
+	with open(outputFileName) as f:
+	    for num, line in enumerate(f, 1):
+	        if lookup in line:
+        	    line_num = num
+
+	line = linecache.getline(outputFileName, line_num + 2 + vib)
+	split_line.append(line.split())
+	LnQ_tot =  split_line[0][4]
+
+	return LnQ_tot
+
 # Future functions to add
 
 def removeFixedRotAndTrans_q():
