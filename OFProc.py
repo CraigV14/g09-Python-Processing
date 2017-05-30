@@ -149,6 +149,23 @@ def totalpartition(V):
 
 	return LnQ_tot
 
+
+def temperature():
+	lookup = 'emperature'
+
+	with open(outputFileName) as f:
+		for num, line in enumerate(f, 1):
+			if lookup in line:
+				line_num = num
+				break
+
+	line = linecache.getline(outputFileName, line_num)
+
+	# assuming temperature is the last input, splits the line at "emperature=" and returns value after "="
+	temperature = (line.split("emperature=", 1)[1]).strip('\n')
+	return temperature
+
+
 # Future functions to add
 
 def removeFixedRotAndTrans_q():
