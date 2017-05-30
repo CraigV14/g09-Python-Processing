@@ -151,6 +151,7 @@ def totalpartition(V):
 
 
 def temperature():
+# returns temperature from output frequency file
 	lookup = 'emperature'
 
 	with open(outputFileName) as f:
