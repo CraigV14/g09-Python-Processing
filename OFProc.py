@@ -133,20 +133,6 @@ def getModRedundantCoords():
 			MRCoords = -1
 	return MRCoords
 
-def totalpartition(V):
-	#returns the natural log of the total partition function ( returns the bot partition function for V = -1 and V = 0 partition function for V = 0)
-	lookup = 'Ln(Q)'
-	split_line = []
-
-	with open(outputFileName) as f:
-	    for num, line in enumerate(f, 1):
-	        if lookup in line:
-        	    line_num = num
-
-	line = linecache.getline(outputFileName, line_num + 2 + vib)
-	split_line.append(line.split())
-	LnQ_tot =  split_line[0][4]
-	return float(LnQ_tot)
 
 
 def temperature():
@@ -165,18 +151,43 @@ def temperature():
 	temperature = (line.split("emperature=", 1)[1]).strip('\n')
 	return float(temperature)
 
-def electronicpartition():
-	#returns the natural log of the electronic partition function
-    lookup = 'Electronic'
+
+def partition(type):
+    # returns the natural log of different components of the partition function
+    # type = 1 returns total (bot)
+    # type = 2 returns electronic
+    # type = 3 returns translational
+    # type = 4 returns rotational
+    # type = 5 returns vibrational
+
+    index = 0
+    line_plus = 0
     split_line = []
+
+    if type == 1:
+        lookup = 'Total Bot'
+        index = 1
+    if type == 2:
+        lookup = 'Electronic'
+    if type == 3:
+        lookup = 'Translational'
+    if type == 4:
+        lookup = 'Rotational'
+    if type == 5:
+        lookup = 'Total Bot'
+        index = 1
+        line_plus = 3
+
     with open(outputFileName) as myFile:
-	    for num, line in enumerate(myFile, 1):
-	        if lookup in line:
-        	    line_num = num
+        for num, line in enumerate(myFile, 1):
+            if lookup in line:
+                line_num = num + line_plus
+
     line = linecache.getline(outputFileName, line_num)
     split_line.append(line.split())
-    LnQ_electronic =  split_line[0][3]
-    return float(LnQ_electronic)
+    LnQ = split_line[0][3 + index]
+    return float(LnQ)
+
 
 # Future functions to add
 
