@@ -167,24 +167,16 @@ def temperature():
 
 def electronicpartition():
 	#returns the natural log of the electronic partition function
-
-	lookup = 'Electronic'
-
-	split_line = []
-
-
-	with open(outputFileName) as myFile:
+    lookup = 'Electronic'
+    split_line = []
+    with open(outputFileName) as myFile:
 	    for num, line in enumerate(myFile, 1):
 	        if lookup in line:
         	    line_num = num
-
-	line = linecache.getline(outputFileName, line_num)
-
-	split_line.append(line.split())
-
-	LnQ_electronic =  split_line[0][3]
-
-	return float(LnQ_electronic)
+    line = linecache.getline(outputFileName, line_num)
+    split_line.append(line.split())
+    LnQ_electronic =  split_line[0][3]
+    return float(LnQ_electronic)
 
 # Future functions to add
 
