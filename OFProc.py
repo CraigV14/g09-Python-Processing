@@ -146,8 +146,7 @@ def totalpartition(V):
 	line = linecache.getline(outputFileName, line_num + 2 + vib)
 	split_line.append(line.split())
 	LnQ_tot =  split_line[0][4]
-
-	return LnQ_tot
+	return float(LnQ_tot)
 
 
 def temperature():
@@ -164,7 +163,7 @@ def temperature():
 
 	# assuming temperature is the last input, splits the line at "emperature=" and returns value after "="
 	temperature = (line.split("emperature=", 1)[1]).strip('\n')
-	return temperature
+	return float(temperature)
 
 
 # Future functions to add
