@@ -61,7 +61,7 @@ def getFreeE():
 
 def getHessian(Numcoordinates, type):
 	# returns hessian as a numpy array
-	#
+	# type = "internal" or "Cartesian"
 	f = open(outputFileName, "r")
 	hessian_data = []
 	for line in f:
@@ -176,7 +176,7 @@ def partition(type):
     if type == 5:
         lookup = 'Total Bot'
         index = 1
-        line_plus = 3
+        line_plus = 2
 
     with open(outputFileName) as myFile:
         for num, line in enumerate(myFile, 1):
