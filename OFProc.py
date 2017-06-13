@@ -1,32 +1,18 @@
 # RULES:
 # only freeze atoms through internal coordinates
-import re
-import IFProc
-import config
-import numpy as np
 import linecache
+import re
 
+import numpy as np
 
-# Set N and outputFileName from config as module wide variables
-N = config.setN()
+import config
+
+# Get outputfile name, N, and N_Freeze from config.py
 outputFileName = config.outputFileName
+N = config.N
+N_Freeze = config.N_Freeze
 
-def findLocation(lookup,firstInstance):
-	# Returns the 0 indexed location for a line in the output file
-	# Inputs:
-	# 			lookup: string. phrase to search for
-	# 			firstInstance: boolean. If true: find location of the first instance
-	# 									If false: find location of last instance
-	# Location of -1 means phrase is not found
-	location = -1
-	with open(outputFileName) as f:
-		for num, line in enumerate(f, 1):
-			if lookup in line:
-				location = num
-				if firstInstance is True:
-					break
-	return location
-
+## OPTIMIZATION RELATED FUNCTIONS ##
 def getOptCoords():
 	# Searches the output file (outputFileName) and extracts the x,y,z positions of the optimized coordinates as a space
 	# separated list of strings
@@ -43,21 +29,43 @@ def getOptCoords():
 	parsedCoords = [nums[i][3]+" "+nums[i][4]+" "+nums[i][5]+"\n" for i in range(N)]
 	return parsedCoords
 
-def getFreeE():
-	# Returns the free energy after a frequency calculation
-	# A value of -1 means the free energy was not found (no freq calc)
-	lookup = ' Sum of electronic and thermal Free Energies='
-	location = findLocation(lookup,False)
+def getZeroPtEnergy():
+	location = -1
+	lookup = ' SCF Done:'
 	with open(outputFileName) as f:
-		Elist = f.readlines()[location-1]
+		for num, line in enumerate(f, 1):
+			if lookup in line[0:10]:
+				location = num
+		f.seek(0)
+		readLine = f.readlines()[location-1]
+	readLine = readLine.split()
+	zeroPtEnergy = float(readLine[4])
+	return zeroPtEnergy
 
-	# Check if free energy exists (i.e. there was an actual freq calculation)
-	if location != -1:
-		freeE = re.findall(r"[-+]?\d*\.\d+|\d+", Elist)
-		freeE = float(freeE[0])
-	else:
-		freeE = -1
-	return freeE
+def getModRedundantCoords():
+	# Read in all the modredundant coordinates as a list of string.
+	# A value of -1 means no modredundant coordinates have been detected
+	lookup = ' The following ModRedundant input section has been read:'
+	location = findLocation(lookup,True)
+	with open(outputFileName) as f:
+		if location != -1:
+			i = 0
+			MRCoords = []
+			# read in modredundant coords until theres no more (entry is NAtoms=)
+			while True:
+				f.seek(0)
+				readLine = f.readlines()[location+i]
+				MRCoords.append(readLine.split())
+				# Criteria to exit (100000 iterations force exits, which means something went wrong)
+				if MRCoords[i][0] == 'NAtoms=' or i > 100000:
+					# 'NAtoms=' is the 2nd line that follows the last modredundant entry. The 1st line is an empty space
+					# so delete it
+					del MRCoords[-1]
+					break
+				i += 1
+		else:
+			MRCoords = -1
+	return MRCoords
 
 def getHessian(Numcoordinates, type):
 	# returns hessian as a numpy array
@@ -97,60 +105,54 @@ def getHessian(Numcoordinates, type):
 
 	return hessian
 
-def ifNormal():
-# returns 1 if the log file has terminated normally, otherwise returns 0
-	split_line = []
-	number_lines = sum(1 for line in open(outputFileName))
-	line = linecache.getline(outputFileName, number_lines)
-	split_line.append(line.split())
-	if(split_line[0][0]=="Normal"):
-		normal = True
+def getSpinAnnihilation():
+	lookup = ' Annihilation of the first spin contaminant:'
+	location = findLocation(lookup,False)
+	if location != -1:
+		with open(outputFileName) as f:
+			f.seek(0)
+			readLine = f.readlines()[location]
+		readLine = readLine.split()
+		s2 = float(readLine[3][0:-1])
+		s2a = float(readLine[5])
 	else:
-		normal = False
-	return normal
+		s2 = -1
+		s2a = -1
+	return s2,s2a
 
-def getModRedundantCoords():
-	# Read in all the modredundant coordinates as a list of string.
-	# A value of -1 means no modredundant coordinates have been detected
-	lookup = ' The following ModRedundant input section has been read:'
-	location = findLocation(lookup,True)
-	with open(outputFileName) as f:
-		if location != -1:
-			i = 0
-			MRCoords = []
-			# read in modredundant coords until theres no more (entry is NAtoms=)
-			while True:
-				f.seek(0)
-				readLine = f.readlines()[location+i]
-				MRCoords.append(readLine.split())
-				# Criteria to exit (100000 iterations force exits, which means something went wrong)
-				if MRCoords[i][0] == 'NAtoms=' or i > 100000:
-					# Time to exit, but the last line read in isn't what we want to delete it
-					del MRCoords[-1]
-					break
-				i += 1
-		else:
-			MRCoords = -1
-	return MRCoords
-
-
-
+## FREQUENCY RELATED FUNCTIONS ##
 def temperature():
 # returns temperature from output frequency file
 	lookup = 'emperature'
-
+	line_num = -1
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
 			if lookup in line:
 				line_num = num
 				break
-
-	line = linecache.getline(outputFileName, line_num)
-
-	# assuming temperature is the last input, splits the line at "emperature=" and returns value after "="
-	temperature = (line.split("emperature=", 1)[1]).strip('\n')
+	if line_num == -1:
+		temperature = -1
+	else:
+		line = linecache.getline(outputFileName, line_num)
+		# assuming temperature is the last input, splits the line at "emperature=" and returns value after "="
+		temperature = (line.split("emperature=", 1)[1]).strip('\n')
 	return float(temperature)
 
+def getFreeE():
+	# Returns the free energy after a frequency calculation
+	# A value of -1 means the free energy was not found (no freq calc)
+	lookup = ' Sum of electronic and thermal Free Energies='
+	location = findLocation(lookup,False)
+	with open(outputFileName) as f:
+		Elist = f.readlines()[location-1]
+
+	# Check if free energy exists (i.e. there was an actual freq calculation)
+	if location != -1:
+		freeE = re.findall(r"[-+]?\d*\.\d+|\d+", Elist)
+		freeE = float(freeE[0])
+	else:
+		freeE = -1
+	return freeE
 
 def partition(type):
     # returns the natural log of different components of the partition function
@@ -188,7 +190,6 @@ def partition(type):
     LnQ = split_line[0][3 + index]
     return float(LnQ)
 
-
 def nearzerovib(N_fix):
 	# returns the sum of the natural log of the 3*number of fixed coordinate partition functions
 	split_line = []
@@ -205,8 +206,6 @@ def nearzerovib(N_fix):
 		LnQ_nearzero = LnQ_nearzero + float(split_line[i][5])
 
 	return LnQ_nearzero
-
-# Future functions to add
 
 def removeFixedRotAndTrans_q():
 	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
@@ -236,34 +235,37 @@ def setNoFrozen():
 			if MR[i][0] == 'X':
 				if MR[i][3] == 'F':
 					N_Freeze += 1
-	# Now see if theres any frozen cartesian coordinates if theres no MR coords
-	else:
-		N_Freeze = IFProc.getFrozenCartNo()
+	# # Now see if theres any frozen cartesian coordinates if theres no MR coords
+	# else:
+	# 	N_Freeze = IFProc.getFrozenCartNo()
 	return N_Freeze
 
-def getSpinAnnihilation():
-	lookup = ' Annihilation of the first spin contaminant:'
-	location = findLocation(lookup,False)
-	if location != -1:
-		with open(outputFileName) as f:
-			f.seek(0)
-			readLine = f.readlines()[location]
-		readLine = readLine.split()
-		s2 = readLine[3][0:-1]
-		s2a = readLine[5]
+## EITHER OPT OR FREQ ##
+def ifNormal():
+# returns 1 if the log file has terminated normally, otherwise returns 0
+	split_line = []
+	number_lines = sum(1 for line in open(outputFileName))
+	line = linecache.getline(outputFileName, number_lines)
+	split_line.append(line.split())
+	if(split_line[0][0]=="Normal"):
+		normal = True
 	else:
-		s2 = -1
-		s2a = -1
-	return s2,s2a
-def getZeroPtEnergy():
+		normal = False
+	return normal
+
+def findLocation(lookup,firstInstance):
+	# Returns the 0 indexed location for a line in the output file
+	# Inputs:
+	# 			lookup: string. phrase to search for
+	# 			firstInstance: boolean. If true: find location of the first instance
+	# 									If false: find location of last instance
+	# Location of -1 means phrase is not found
 	location = -1
-	lookup = ' SCF Done:'
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
-			if lookup in line[0:10]:
+			if lookup in line:
 				location = num
-		f.seek(0)
-		readLine = f.readlines()[location-1]
-	readLine = readLine.split()
-	zeroPtEnergy = float(readLine[4])
-	return zeroPtEnergy
+				if firstInstance is True:
+					break
+	return location
+

@@ -1,7 +1,7 @@
 import config
 
-config.outputFileName ="C:/Users/Craig/Box Sync/UCSB2/Research/HomolysisPaper/5III/5IIIopt.log"
-config.inputFileName = "C:/Users/Craig/Box Sync/UCSB2/Research/HomolysisPaper/5III/5IIIopt.gjf"
+config.outputFileName ="C:/Users/Craig/Box Sync/UCSB2/Research/HomolysisPaper/butylBridge[5V-5II]/3/BB3.log"
+config.inputFileName = "C:/Users/Craig/Box Sync/UCSB2/Research/HomolysisPaper/butylBridge[5V-5II]/3/BB3.log"
 
 import IFProc
 import OFProc
@@ -31,7 +31,7 @@ else:
     s2a = str(s2a)
     s2 = str(s2)
 # Create report
-with open('report.txt', 'a') as f:
+with open('report.txt', 'w') as f:
     f.write('Job details for: '+config.outputFileName+ '\n\n')
     f.write('Normal termination? '+str(normalTerm)+'\n\n')
     f.write('Route Card: '+routeCard+'\n')

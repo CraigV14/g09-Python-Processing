@@ -1,10 +1,14 @@
 import config
+import mod
 
-config.outputFileName = "C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3OH/freq/freqSiF3OHopt.log"
-# config.inputFileName = "C:/Users/Craig/Box Sync/UCSB2/Research/Fracture Calculation2/Hydrogen Extraction/SiF3O/freq/freqSiF3Oopt.log"
+config.outputFileName = "C:/Users/Craig/PycharmProjects/g09-Python-Processing/testFiles/SiVinylFrozenOpt2.log"
+config.inputFileName = 'C:/Users/Craig/PycharmProjects/g09-Python-Processing/testFiles/SiVinylFrozenOpt2.gjf'
 
-import IFProc
+config.N = mod.setN()
+config.N_Frozen = mod.setN_Freeze()
+# print config.N
+# print config.N_Freeze
+
 import OFProc
 
-print OFProc.getZeroPtEnergy()
-
+print OFProc.getOptCoords()

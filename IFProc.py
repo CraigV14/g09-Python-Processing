@@ -2,7 +2,7 @@ import re
 import config
 import OFProc
 # Set N and inputFileName from config
-N = config.setN()
+# N = config.setN()
 inputFileName = config.inputFileName
 
 def getRoute():
