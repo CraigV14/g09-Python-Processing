@@ -189,6 +189,23 @@ def partition(type):
     return float(LnQ)
 
 
+def nearzerovib(N_fix):
+	# returns the sum of the natural log of the 3*number of fixed coordinate partition functions
+	split_line = []
+	LnQ_nearzero = float(0)
+
+	with open(outputFileName) as myFile:
+		for num, line in enumerate(myFile, 1):
+			if "Total Bot" in line:
+				line_num = num + 3
+
+	for i in range(0, 3 * N_fix):
+		line = linecache.getline(outputFileName, line_num + i)
+		split_line.append(line.split())
+		LnQ_nearzero = LnQ_nearzero + float(split_line[i][5])
+
+	return LnQ_nearzero
+
 # Future functions to add
 
 def removeFixedRotAndTrans_q():
