@@ -155,40 +155,40 @@ def getFreeE():
 	return freeE
 
 def partition(type):
-    # returns the natural log of different components of the partition function
-    # type = 1 returns total (bot)
-    # type = 2 returns electronic
-    # type = 3 returns translational
-    # type = 4 returns rotational
-    # type = 5 returns vibrational
+	# returns the natural log of different components of the partition function
+	# type = 1 returns total (bot)
+	# type = 2 returns electronic
+	# type = 3 returns translational
+	# type = 4 returns rotational
+	# type = 5 returns vibrational
 
-    index = 0
-    line_plus = 0
-    split_line = []
+	index = 0
+	line_plus = 0
+	split_line = []
 
-    if type == 1:
-        lookup = 'Total Bot'
-        index = 1
-    if type == 2:
-        lookup = 'Electronic'
-    if type == 3:
-        lookup = 'Translational'
-    if type == 4:
-        lookup = 'Rotational'
-    if type == 5:
-        lookup = 'Total Bot'
-        index = 1
-        line_plus = 2
+	if type == 1:
+		lookup = 'Total Bot'
+		index = 1
+	if type == 2:
+		lookup = 'Electronic'
+	if type == 3:
+		lookup = 'Translational'
+	if type == 4:
+		lookup = 'Rotational'
+	if type == 5:
+		lookup = 'Total Bot'
+		index = 1
+		line_plus = 2
 
-    with open(outputFileName) as myFile:
-        for num, line in enumerate(myFile, 1):
-            if lookup in line:
-                line_num = num + line_plus
+	with open(outputFileName) as myFile:
+		for num, line in enumerate(myFile, 1):
+			if lookup in line:
+				line_num = num + line_plus
 
-    line = linecache.getline(outputFileName, line_num)
-    split_line.append(line.split())
-    LnQ = split_line[0][3 + index]
-    return float(LnQ)
+	line = linecache.getline(outputFileName, line_num)
+	split_line.append(line.split())
+	LnQ = split_line[0][3 + index]
+	return float(LnQ)
 
 def nearzerovib(N_fix):
 	# returns the sum of the natural log of the 3*number of fixed coordinate partition functions
