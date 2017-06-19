@@ -4,7 +4,8 @@ import OFProc
 # Set N and inputFileName from config
 # N = config.setN()
 inputFileName = config.inputFileName
-
+N = config.N
+N_Freeze = config.N_Freeze
 def getRoute():
 	# Returns the title card as a list where each element is an option
 	lookup = "#"

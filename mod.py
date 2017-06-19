@@ -13,7 +13,8 @@ def setN():
         Nlist = f.readlines()[location-1]
     nums = re.findall(r'\d+', Nlist)
     N = int(nums[0])
-    return N
+    config.N = N
+
 # Set number of frozen atoms
 def setN_Freeze():
     import OFProc
