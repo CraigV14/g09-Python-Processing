@@ -67,7 +67,7 @@ def getModRedundantCoords():
 			MRCoords = -1
 	return MRCoords
 
-def getHessian(Numcoordinates, type):
+def getHessian(type):
 	# returns hessian as a numpy array
 	# type = "internal" or "Cartesian"
 	f = open(outputFileName, "r")
@@ -80,15 +80,17 @@ def getHessian(Numcoordinates, type):
 				line1 = line.replace("D", "E")
 				hessian_data.append(line1.split())
 	f.close()
-	n = Numcoordinates
+	print hessian_data
+	n = 3*N
 	o = 5  # number of columns that gaussian prints ( current version = 5) , not checked for smaller number of coordinates (rare)
 	# variables used to parse through data
 	m = 0
-	p = n / o + 1
+	p = N / o + 1
 	temp = 0
 	q = 0
 
 	hessian = np.zeros(shape=(n, n))
+
 
 	for i in range(0, n):
 		p = i / o
@@ -99,6 +101,7 @@ def getHessian(Numcoordinates, type):
 		if m % o == 0:
 			temp = temp + q * o
 		for j in range(m, n):
+
 			hessian[j][m] = float(hessian_data[(n) * p - temp + p + j + 1 - p * o][m + 1 - o * p])
 			hessian[m][j] = hessian[j][m]
 		m = m + 1
@@ -230,14 +233,23 @@ def setNoFrozen():
 	N_Freeze = 0
 	#	See if theres any MR coordinates
 	MR = getModRedundantCoords()
+
 	if MR != -1:
+		frozenAtomList = []
 		for i in range(len(MR)):
-			if MR[i][0] == 'X':
-				if MR[i][3] == 'F':
-					N_Freeze += 1
-	# # Now see if theres any frozen cartesian coordinates if theres no MR coords
-	# else:
-	# 	N_Freeze = IFProc.getFrozenCartNo()
+			if MR[i][3] == 'F':
+				frozenAtomList.extend(MR[i][1])
+				frozenAtomList.extend(MR[i][2])
+				N_Freeze += 1
+		frozenAtomList = list(set(frozenAtomList))
+		try:
+			frozenAtomList.remove('*')
+		except ValueError:
+			pass
+		N_Freeze = len(frozenAtomList)
+	else:
+		N_Freeze = 0
+
 	return N_Freeze
 
 ## EITHER OPT OR FREQ ##
