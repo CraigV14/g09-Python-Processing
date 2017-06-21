@@ -194,7 +194,7 @@ def partition(type):
 	return float(LnQ)
 
 def nearzerovib(N_fix):
-	# returns the sum of the natural log of the 3*number of fixed coordinate partition functions
+	# returns the sum of the natural log of the 3*number of fixed coordinate partition functions ( the lowest 3*N_freeze frequencies)
 	split_line = []
 	LnQ_nearzero = float(0)
 
@@ -203,7 +203,7 @@ def nearzerovib(N_fix):
 			if "Total Bot" in line:
 				line_num = num + 3
 
-	for i in range(0, 3 * N_fix):
+	for i in range(0,3*N_fix):
 		line = linecache.getline(outputFileName, line_num + i)
 		split_line.append(line.split())
 		LnQ_nearzero = LnQ_nearzero + float(split_line[i][5])
@@ -212,8 +212,10 @@ def nearzerovib(N_fix):
 
 def removeFixedRotAndTrans_q():
 	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
-	appendedFreeE = 1
-	return appendedFreeE
+	T = temperature()
+	K = 3.166841435013854E-06
+	correctedFreeE = getFreeE() - K*T*(partition(1)-partition(3)-partition(4)-nearzerovib(6))
+	return correctedFreeE
 
 def getNoImagFreq():
 	with open(outputFileName) as f:
