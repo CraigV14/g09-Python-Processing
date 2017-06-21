@@ -125,21 +125,22 @@ def getSpinAnnihilation():
 
 ## FREQUENCY RELATED FUNCTIONS ##
 def temperature():
-# returns temperature from output frequency file
-	lookup = 'emperature'
+# returns temperature from output frequency file, even if temperature has not been given as an input (gives default value then = 298.15)
+	lookup = '- Thermochemistry -'
 	line_num = -1
+	split_line = []
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
 			if lookup in line:
-				line_num = num
+				line_num = num + 2
 				break
 	if line_num == -1:
 		temperature = -1
 	else:
 		line = linecache.getline(outputFileName, line_num)
-		# assuming temperature is the last input, splits the line at "emperature=" and returns value after "="
-		temperature = (line.split("emperature=", 1)[1]).strip('\n')
-	return float(temperature)
+	split_line.append(line.split())
+	temperature = float(split_line[0][1])
+	return temperature
 
 def getFreeE():
 	# Returns the free energy after a frequency calculation

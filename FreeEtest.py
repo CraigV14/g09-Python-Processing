@@ -1,7 +1,7 @@
 import config
 import mod
 
-config.outputFileName = "freq.log"
+config.outputFileName = "freq_6fixed.log"
 
 
 mod.setN()
@@ -11,7 +11,7 @@ import IFProc
 import OFProc
 
 
-print OFProc.temperature()
+print OFProc.temperature2()
 
 print OFProc.partition(1)
 
