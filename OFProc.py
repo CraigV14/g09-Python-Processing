@@ -56,10 +56,14 @@ def getModRedundantCoords():
 				f.seek(0)
 				readLine = f.readlines()[location+i]
 				MRCoords.append(readLine.split())
-				# Criteria to exit (100000 iterations force exits, which means something went wrong)
-				if MRCoords[i][0] == 'NAtoms=' or i > 100000:
+				# For g09 C01, Last line is NAtoms
+				# For g09 D01, last line is blank
+				if not MRCoords[i]:
 					# 'NAtoms=' is the 2nd line that follows the last modredundant entry. The 1st line is an empty space
 					# so delete it
+					del MRCoords[-1]
+					break
+				elif MRCoords[i][0] == 'NAtoms=':
 					del MRCoords[-1]
 					break
 				i += 1
@@ -232,18 +236,39 @@ def getNoImagFreq():
 	del line
 	return noImFreq
 
-def setNoFrozen():
+def getNoFrozenAndFrozenList():
 	N_Freeze = 0
 	#	See if theres any MR coordinates
 	MR = getModRedundantCoords()
-
 	if MR != -1:
 		frozenAtomList = []
 		for i in range(len(MR)):
-			if MR[i][3] == 'F':
-				frozenAtomList.extend(MR[i][1])
-				frozenAtomList.extend(MR[i][2])
-				N_Freeze += 1
+			if MR[i][2] == 'F':
+				frozenAtomList.append(str(MR[i][1]))
+			# Frozen Bond Length (B)
+			try:
+				if MR[i][3] == 'F':
+					frozenAtomList.append(str(MR[i][1]))
+					frozenAtomList.append(str(MR[i][2]))
+			except IndexError:
+				pass
+			# Frozen Angle (A)
+			try:
+				if MR[i][4] == 'F':
+					frozenAtomList.append(str(MR[i][1]))
+					frozenAtomList.append(str(MR[i][2]))
+					frozenAtomList.append(str(MR[i][3]))
+			# Frozen Dihedral (D)
+			except IndexError:
+				pass
+			try:
+				if MR[i][5] == 'F':
+					frozenAtomList.append(str(MR[i][1]))
+					frozenAtomList.append(str(MR[i][2]))
+					frozenAtomList.append(str(MR[i][3]))
+					frozenAtomList.append(str(MR[i][4]))
+			except IndexError:
+				pass
 		frozenAtomList = list(set(frozenAtomList))
 		try:
 			frozenAtomList.remove('*')
@@ -253,7 +278,7 @@ def setNoFrozen():
 	else:
 		N_Freeze = 0
 
-	return N_Freeze
+	return N_Freeze,frozenAtomList
 
 ## EITHER OPT OR FREQ ##
 def ifNormal():
