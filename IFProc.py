@@ -7,7 +7,7 @@ inputFileName = config.inputFileName
 N = config.N
 N_Freeze = config.N_Freeze
 def getRoute():
-	# Returns the title card as a list where each element is an option
+	# Returns the title card as a list where each element is an option and its location
 	lookup = "#"
 	with open(inputFileName) as f:
 		for num, line in enumerate(f, 1):
@@ -18,7 +18,7 @@ def getRoute():
 		f.seek(0)
 		titleCard = f.readlines()[location]
 		titleCard = titleCard.split(' ')
-	return titleCard
+	return titleCard,location
 
 def getAtomsAndInitialCoords():
 	# Returns the list of atoms and initial coordinates
@@ -57,3 +57,16 @@ def getFrozenCartNo():
 		except ValueError:
 			noFrozenCart+=0
 	return noFrozenCart
+
+def makeFreqInputFile(inputFileName, freqInput, tCardLocation):
+	with open(inputFileName) as f:
+		inputFile = f.readlines()
+	# print(inputFile)
+	tCardLocation-=1
+	inputFile[tCardLocation] = titleCard
+	inputFile[tCardLocation+5:tCardLocation+5+N] = freqInput
+
+
+	with open('freq'+inputFileName, 'w') as f:
+		for i in range(len(inputFile)):
+			f.write(inputFile[i])
