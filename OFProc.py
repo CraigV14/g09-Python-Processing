@@ -125,21 +125,22 @@ def getSpinAnnihilation():
 
 ## FREQUENCY RELATED FUNCTIONS ##
 def temperature():
-# returns temperature from output frequency file
-	lookup = 'emperature'
+# returns temperature from output frequency file, even if temperature has not been given as an input (gives default value then = 298.15)
+	lookup = '- Thermochemistry -'
 	line_num = -1
+	split_line = []
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
 			if lookup in line:
-				line_num = num
+				line_num = num + 2
 				break
 	if line_num == -1:
 		temperature = -1
 	else:
 		line = linecache.getline(outputFileName, line_num)
-		# assuming temperature is the last input, splits the line at "emperature=" and returns value after "="
-		temperature = (line.split("emperature=", 1)[1]).strip('\n')
-	return float(temperature)
+	split_line.append(line.split())
+	temperature = float(split_line[0][1])
+	return temperature
 
 def getFreeE():
 	# Returns the free energy after a frequency calculation
@@ -194,7 +195,7 @@ def partition(type):
 	return float(LnQ)
 
 def nearzerovib(N_fix):
-	# returns the sum of the natural log of the 3*number of fixed coordinate partition functions
+	# returns the sum of the natural log of the 3*number of fixed coordinate partition functions ( the lowest 3*N_freeze frequencies)
 	split_line = []
 	LnQ_nearzero = float(0)
 
@@ -203,7 +204,7 @@ def nearzerovib(N_fix):
 			if "Total Bot" in line:
 				line_num = num + 3
 
-	for i in range(0, 3 * N_fix):
+	for i in range(0,3*N_fix):
 		line = linecache.getline(outputFileName, line_num + i)
 		split_line.append(line.split())
 		LnQ_nearzero = LnQ_nearzero + float(split_line[i][5])
@@ -212,8 +213,10 @@ def nearzerovib(N_fix):
 
 def removeFixedRotAndTrans_q():
 	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
-	appendedFreeE = 1
-	return appendedFreeE
+	T = temperature()
+	K = 3.166841435013854E-06
+	correctedFreeE = getFreeE() - K*T*(partition(1)-partition(3)-partition(4)-nearzerovib(6))
+	return correctedFreeE
 
 def getNoImagFreq():
 	with open(outputFileName) as f:
