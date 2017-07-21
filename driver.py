@@ -1,8 +1,9 @@
 import config
 import mod
-
-config.outputFileName = "C:/Users/Craig/PycharmProjects/g09-Python-Processing/testFiles/SiVinylFrozenOpt2.log"
-config.inputFileName = 'C:/Users/Craig/PycharmProjects/g09-Python-Processing/testFiles/SiVinylFrozenOpt2.gjf'
+import numpy as np
+import re
+config.outputFileName = "C:/Users/Craig/PycharmProjects/g09-Python-Processing/testFiles/VCMinput.log"
+config.inputFileName = 'C:/Users/Craig/PycharmProjects/g09-Python-Processing/testFiles/VCMinput.gjf'
 temp = '373.15'
 
 mod.setN()
@@ -11,63 +12,46 @@ mod.setN_Freeze()
 import IFProc
 import OFProc
 
+# Read in hessian matrix in LT form
+with open("C:/Users/Craig/PycharmProjects/g09-Python-Processing/testFiles/VCMshort.7") as f:
+    elements = f.readlines()
+# Strip \n
+elements = map(str.strip, elements)
+# Split up each row into list
+elements = map(lambda x: x.split(), elements)
+# Flatten list of list
+elements  = [y for x in elements for y in x]
+# Replace D with e
+elements = [w.replace('D', 'e') for w in elements]
+# Cast as floats
+elements = [float(w) for w in elements]
+# Remove first 3N elements, these are not part of the Hessian
+del elements[0:3*config.N]
+# Size of LT matrix based on number of elements
+arrSize =  int(-0.5 + (np.sqrt(1 + 8 * len(elements)) / 2))
 
-# Fetch only the first row, which is the atom list, we don't care about the initial coordinates
-atomList = IFProc.getAtomsAndInitialCoords()[0]
-# Get modredundant coordinates
-modRed = OFProc.getModRedundantCoords()
+# List -> LT matrix
+indices = np.tril_indices(arrSize)
+H = np.zeros((arrSize, arrSize))
+H[indices] = elements
 
-##############################
-# Gathering The Frozen Atoms #
-##############################
+# Matrix is symmetric so fill it out
+H = H + np.transpose(H) - np.diag(np.diag(H))
 
-# Read in every frozen atom
-frozenAtomList = []
-for i in range(len(modRed)):
-    if modRed[i][3] == 'F':
-        frozenAtomList.extend(modRed[i][1])
-        frozenAtomList.extend(modRed[i][2])
-# Remove duplicates
-frozenAtomList= list(set(frozenAtomList))
-# Removes '*' if its there. Does nothing if its not
-try:
-    frozenAtomList.remove('*')
-except ValueError:
-    pass
-# Make the frozen atoms super duper heavy
-for i in range(config.N_Freeze):
-    atomList[int(frozenAtomList[i])-1] += "(Iso=10000000)"
+# Conversion factor from Ha/bohr**2 to amu/s**2
+convFactor = 4.3597439e-18/(0.5291772086e-10)**2/1.66053878e-27
+# Mass weight matrix
+H = H*convFactor
+# Get masses in amu
+masses = OFProc.getMasses()
+# Vector of N masses to 3N masses
+masses = [x for pair in zip(masses,masses,masses) for x in pair]
+MminusHalf = np.diag(np.power(masses,-0.5))
+# print MminusHalf
+H = np.dot(np.dot(MminusHalf,H),MminusHalf)
 
-#################################
-# Get the optimized coordinates #
-#################################
-optCoords = OFProc.getOptCoords()
-# Generate the list of now frozen coordinates to do the frequency calculation on
-freqCoordList = [atomList[x]+'\t\t\t'+optCoords[x] for x in range(config.N)]
-#########################
-# Append the title card #
-#########################
+# Get the eigenvalues
+evals = np.linalg.eigvals(H)
+freq = np.sqrt((evals)/(4.*3.14159**2*(2.99792458e10)**2))
 
-route,tCardLoc = IFProc.getRoute()
-# Strip \n from last term
-route[-1] = route[-1][0:-1]
-# Get rid of opt
-sub = 'opt'
-optString = [s for s in route if sub.lower() in s.lower()]
-route.remove(optString[0])
-# Add freq and punch derivatives
-route.append('punch(derivatives)')
-route.append('freq')
-route.append('temp='+temp+'\n')
-
-with open(config.inputFileName) as f:
-    content = f.readlines()
-# Find
-content[tCardLoc] = ' '.join(route)
-content[tCardLoc+5:tCardLoc+5+config.N] = freqCoordList
-
-# Remove Modredundant Coord Section
-del content[tCardLoc+6+config.N:tCardLoc+6+config.N+len(modRed)+1]
-
-with open('FreqTest.txt', 'w') as f:
-    [f.write(content[i]) for i in range(len(content))]
+print freq

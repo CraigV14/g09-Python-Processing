@@ -236,6 +236,25 @@ def getNoImagFreq():
 	del line
 	return noImFreq
 
+def getMasses():
+	lookup = '- Thermochemistry -'
+	line_num = -1
+	with open(outputFileName) as f:
+		for num, line in enumerate(f, 1):
+			if lookup in line:
+				line_num = num + 2
+				break
+		f.seek(0)
+		lines = f.readlines()[line_num:line_num+config.N]
+
+	lines = map(str.strip, lines)
+	# Split up each row into list
+	lines = map(lambda x: x.split(), lines)
+	masses=[]
+	for x in range(0,config.N):
+		masses.append( float(lines[x][-1]))
+	return masses
+
 def getNoFrozenAndFrozenList():
 	N_Freeze = 0
 	#	See if theres any MR coordinates
@@ -277,6 +296,7 @@ def getNoFrozenAndFrozenList():
 		N_Freeze = len(frozenAtomList)
 	else:
 		N_Freeze = 0
+		frozenAtomList = None
 
 	return N_Freeze,frozenAtomList
 
