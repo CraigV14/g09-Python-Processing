@@ -58,6 +58,18 @@ def getFrozenCartNo():
 			noFrozenCart+=0
 	return noFrozenCart
 
+def getNoHeavyAtoms():
+	noHeavyAtoms = 0
+	heavyMass=0
+
+	atoms = getAtomsAndInitialCoords()[0]
+	for x in xrange(len(atoms)):
+		if atoms[x][-1] == ')':
+			noHeavyAtoms += 1
+			heavyMass = atoms[x][atoms[x].find("(") + 1:atoms[x].find(")")]
+			heavyMass = heavyMass[4:]
+	return noHeavyAtoms,heavyMass
+
 def makeFreqInputFile(inputFileName, freqInput, tCardLocation):
 	with open(inputFileName) as f:
 		inputFile = f.readlines()
@@ -65,7 +77,6 @@ def makeFreqInputFile(inputFileName, freqInput, tCardLocation):
 	tCardLocation-=1
 	inputFile[tCardLocation] = titleCard
 	inputFile[tCardLocation+5:tCardLocation+5+N] = freqInput
-
 
 	with open('freq'+inputFileName, 'w') as f:
 		for i in range(len(inputFile)):

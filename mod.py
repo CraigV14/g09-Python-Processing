@@ -18,5 +18,10 @@ def setN():
 # Set number of frozen atoms
 def setN_Freeze():
     import OFProc
+    import IFProc
+
     N_Freeze = OFProc.getNoFrozenAndFrozenList()[0]
+    if N_Freeze == 0:
+        N_Freeze = IFProc.getNoHeavyAtoms()[0]
+
     config.N_Freeze = N_Freeze

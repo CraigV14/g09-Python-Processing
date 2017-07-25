@@ -2,7 +2,7 @@
 # only freeze atoms through internal coordinates
 import linecache
 import re
-
+import IFProc
 import numpy as np
 
 import config
@@ -237,7 +237,7 @@ def getNoImagFreq():
 	return noImFreq
 
 def getMasses():
-	lookup = '- Thermochemistry -'
+	lookup = ' - Thermochemistry -'
 	line_num = -1
 	with open(outputFileName) as f:
 		for num, line in enumerate(f, 1):
@@ -251,8 +251,13 @@ def getMasses():
 	# Split up each row into list
 	lines = map(lambda x: x.split(), lines)
 	masses=[]
+	print IFProc.getNoHeavyAtoms()[1]
 	for x in range(0,config.N):
-		masses.append( float(lines[x][-1]))
+		try:
+			masses.append( float(lines[x][-1]))
+		except ValueError:
+			if lines[x][-1]=='mass**********':
+				masses.append(float(IFProc.getNoHeavyAtoms()[1]))
 	return masses
 
 def getNoFrozenAndFrozenList():
