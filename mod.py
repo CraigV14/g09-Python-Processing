@@ -19,8 +19,10 @@ def setN():
 def setN_Freeze():
     import OFProc
     import IFProc
-
+    # First check for fixed atoms
     N_Freeze = OFProc.getNoFrozenAndFrozenList()[0]
+
+    # Then check for heavy atoms
     if N_Freeze == 0:
         N_Freeze = IFProc.getNoHeavyAtoms()[0]
 
