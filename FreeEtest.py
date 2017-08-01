@@ -13,13 +13,13 @@ import OFProc
 
 print OFProc.temperature2()
 
-print OFProc.partition(1)
+print OFProc.getLog_q(1)
 
-print OFProc.partition(2)
+print OFProc.getLog_q(2)
 
-print OFProc.partition(3)
+print OFProc.getLog_q(3)
 
-print OFProc.partition(4)
+print OFProc.getLog_q(4)
 
 print OFProc.getFreeE()
 

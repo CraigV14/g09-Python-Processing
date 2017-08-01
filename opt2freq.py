@@ -67,3 +67,4 @@ del content[tCardLoc+6+config.N:tCardLoc+6+config.N+len(modRed)+1]
 
 with open('FreqTest.txt', 'w') as f:
     [f.write(content[i]) for i in range(len(content))]
+

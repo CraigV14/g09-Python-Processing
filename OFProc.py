@@ -21,12 +21,14 @@ def getOptCoords():
 	lookup = " Number     Number       Type             X           Y           Z"
 	#Open file, search for lookup, get line number
 	location = findLocation(lookup,False) + 1
+
 	with open(outputFileName) as f:
-		coords = f.readlines()[location:location+N]
+		coords = f.readlines()[location:location+config.N]
 	# Extract all numbers
 	nums = [re.findall(r"[-+]?\d*\.\d+|\d+",x) for x in coords]
 	#Parse just the (x,y,z) positions
-	parsedCoords = [nums[i][3]+" "+nums[i][4]+" "+nums[i][5]+"\n" for i in range(N)]
+	parsedCoords = [nums[i][3]+" "+nums[i][4]+" "+nums[i][5]+"\n" for i in range(config.N)]
+
 	return parsedCoords
 
 def getZeroPtEnergy():
@@ -128,7 +130,7 @@ def getSpinAnnihilation():
 	return s2,s2a
 
 ## FREQUENCY RELATED FUNCTIONS ##
-def temperature():
+def getTemp():
 # returns temperature from output frequency file, even if temperature has not been given as an input (gives default value then = 298.15)
 	lookup = '- Thermochemistry -'
 	line_num = -1
@@ -162,7 +164,57 @@ def getFreeE():
 		freeE = -1
 	return freeE
 
-def partition(type):
+def getConstrainedThermochemistry():
+	freqList = getFreq()
+	T = getTemp()
+
+	vibTemp = [1.98644568E-25 * 100 / 1.38064852E-23 * w for w in freqList]
+	R = 8.314
+	kBT = T * 1.38064852E-23 / 4.35974465E-18
+	# Calculate thermal corrections, ignoring partition functions from translation and rotation, and vibration of heavy atoms
+	# q_rot = getLog_q(4)
+	# q_elec = getLog_q(2)
+	# q_trans = getLog_q(3)
+
+	q_rot = 0
+	q_elec = 0
+	q_trans = 0
+
+	# Translation
+	St = (q_trans + 5 / 2.) * R
+	Et = 3 / 2. * R * T
+
+	# Rotation
+	Sr = (q_rot + 3 / 2.) * R
+	Er = 3 / 2. * R * T
+
+	# Electronic (both are 0)
+	Se = 0
+	Ee = 0
+
+	# Vibration
+	Svk = [theta / T / (np.exp(theta / T) - 1) - np.log(1 - np.exp(-theta / T)) for theta in vibTemp]
+	Evk = [theta * (0.5 + 1. / (np.exp(theta / T) - 1.)) for theta in vibTemp]
+
+	Sv = R * sum(Svk[config.N_Freeze * 3:])
+	Ev = R * sum(Evk[config.N_Freeze * 3:])
+	# Thermal Corrections in Ha
+	Ecorrection = (Et + Er + Ee + Ev) / 1000 / 2625.499638
+	# Ha/K
+	S = (St + Sr + Se + Sv) / 1000 / 2625.499638
+
+	E = getZeroPtEnergy()
+
+	Ecorrected = E + Ecorrection
+
+	constrainedH = Ecorrected + kBT
+	constrainedTS = T * S
+	constrainedG = constrainedH - constrainedTS
+
+
+	return constrainedG, constrainedH,constrainedTS
+
+def getLog_q(type):
 	# returns the natural log of different components of the partition function
 	# type = 1 returns total (bot)
 	# type = 2 returns electronic
@@ -217,9 +269,9 @@ def nearzerovib(N_fix):
 
 def removeFixedRotAndTrans_q():
 	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
-	T = temperature()
+	T = getTemp()
 	K = 3.166841435013854E-06
-	correctedFreeE = getFreeE() - K*T*(partition(1)-partition(3)-partition(4)-nearzerovib(6))
+	correctedFreeE = getFreeE() - K*T*(getLog_q(1) - getLog_q(3) - getLog_q(4) - nearzerovib(6))
 	return correctedFreeE
 
 def getNoImagFreq():
@@ -259,6 +311,33 @@ def getMasses():
 			if lines[x][-1]=='mass**********':
 				masses.append(float(IFProc.getNoHeavyAtoms()[1]))
 	return masses
+
+def getFreq():
+	lookup = 'Frequencies --   '
+	loc = findLocation(lookup,True)-1
+	lines=''
+	freqList = []
+	x=0
+	with open(outputFileName) as f:
+		f.seek(0)
+		while lines != ' - Thermochemistry -\n':
+			lines = f.readlines()[x+loc]
+			if lines[0:15] == ' Frequencies --':
+				# Remove 'Frequencies --'
+				lines = lines[16:-1]
+				freqList.append(lines)
+			f.seek(0)
+			x +=1
+	# String processing #
+	# Strip \n
+	freqList = map(str.strip, freqList)
+	# Split
+	freqList = map(lambda x: x.split(), freqList)
+	# Flatten
+	freqList = [y for x in freqList for y in x]
+	# Cast as floats
+	freqList = [float(w) for w in freqList]
+	return freqList
 
 def getNoFrozenAndFrozenList():
 	N_Freeze = 0

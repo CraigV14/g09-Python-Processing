@@ -30,10 +30,10 @@ def getAtomsAndInitialCoords():
 				break
 		location-=1
 		f.seek(0)
-		inputList = f.readlines()[location+5:location+5+N]
+		inputList = f.readlines()[location+5:location+5+config.N]
 		inputList = [i.split() for i in inputList]
-		atomList = [inputList[i][0] for i in range(N)]
-		iniCoords = [inputList[i][-3]+' '+inputList[i][-2]+' '+inputList[i][-1] for i in range(N)]
+		atomList = [inputList[i][0] for i in range(config.N)]
+		iniCoords = [inputList[i][-3]+' '+inputList[i][-2]+' '+inputList[i][-1] for i in range(config.N)]
 
 	return atomList, iniCoords
 
@@ -61,7 +61,6 @@ def getFrozenCartNo():
 def getNoHeavyAtoms():
 	noHeavyAtoms = 0
 	heavyMass=0
-
 	atoms = getAtomsAndInitialCoords()[0]
 	for x in xrange(len(atoms)):
 		if atoms[x][-1] == ')':

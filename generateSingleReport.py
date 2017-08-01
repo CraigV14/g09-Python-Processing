@@ -1,20 +1,26 @@
 import config
 
-config.outputFileName ="C:/Users/Craig/Box Sync/UCSB2/Research/HomolysisPaper/butylBridge[5V-5II]/3/BB3.log"
-config.inputFileName = "C:/Users/Craig/Box Sync/UCSB2/Research/HomolysisPaper/butylBridge[5V-5II]/3/BB3.log"
+config.outputFileName ="testFiles/2IIIFreq.log"
+config.inputFileName = "testFiles/2IIIFreq.gjf"
+import mod
+mod.setN()
+mod.setN_Freeze()
 
 import IFProc
 import OFProc
+
+
 # Get: route card, optimized coordinates, free energy
-routeCard = IFProc.getRoute()
+routeCard = IFProc.getRoute()[0]
 optCoords = OFProc.getOptCoords()
 freeE = OFProc.getFreeE()
 normalTerm = OFProc.ifNormal()
 atoms, ini = IFProc.getAtomsAndInitialCoords()
 s2, s2a = OFProc.getSpinAnnihilation()
 zeroPt = OFProc.getZeroPtEnergy()
+NImag = OFProc.getNoImagFreq()
 
-coordList = [atoms[i] +'  '+ optCoords[i]+'    ' for i in range(len(atoms))]
+coordList = [atoms[i] +'\t\t\t'+ optCoords[i]+'' for i in range(len(atoms))]
 
 # stringify
 routeCard = " ".join(str(x) for x in routeCard)
@@ -38,6 +44,7 @@ with open('report.txt', 'w') as f:
     f.write('Optimized coordinates:\n'+coordList)
     f.write('\nZero Point Energy (Hartrees): '+zeroPt)
     f.write('\nFree Energy: '+freeE)
+    f.write('\nNumber of imaginary frequencies: '+str(NImag))
     f.write('\nSpin contamination:\n')
     f.write('   Before: '+s2+'\n')
     f.write('   After: '+s2a)
