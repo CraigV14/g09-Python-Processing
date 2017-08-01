@@ -193,7 +193,7 @@ def getConstrainedThermochemistry():
 	Ee = 0
 
 	# Vibration
-	Svk = [theta / T / (np.exp(theta / T) - 1) - np.log(1 - np.exp(-theta / T)) for theta in vibTemp]
+	Svk = [theta / T / (np.exp(theta / T) - 1) - np.log(1 - np.exp(-abs(theta) / T)) for theta in vibTemp]
 	Evk = [theta * (0.5 + 1. / (np.exp(theta / T) - 1.)) for theta in vibTemp]
 
 	Sv = R * sum(Svk[config.N_Freeze * 3:])

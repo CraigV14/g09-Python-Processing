@@ -49,8 +49,17 @@ H(Iso=10000000)			-3.813801 2.949512 -0.179499
 H(Iso=10000000)			-3.058420 0.287818 2.079215
 
 Zero Point Energy (Hartrees): -3010.14962037
-Free Energy: -3010.152453 kJ/mol
+Free Energy (Ha): -3010.152453
+Thermochemistry accounting for 8 constrained periphery atoms:
+	Free Energy (Ha): -3009.91183241
+	Enthalpy (Ha): -3009.85622449
+	T*Entropy (Ha): 0.0556079193825
+
 Number of imaginary frequencies: 1
+WARNING 1+ IMAGINARY FREQUENCIES. Ignore this if this is a TS and there is only one.
+Otherwise, check if modes are in constraint space, or follow the imaginary modes
+If modes are not in constrainet space, thermochemistry (and everything else) IS WRONG
+
 Spin contamination:
    Before: 1.7017
    After: 0.7762

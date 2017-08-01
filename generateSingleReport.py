@@ -14,6 +14,7 @@ import OFProc
 routeCard = IFProc.getRoute()[0]
 optCoords = OFProc.getOptCoords()
 freeE = OFProc.getFreeE()
+constrainedG,constrainedH,constrainedTS = OFProc.getConstrainedThermochemistry()
 normalTerm = OFProc.ifNormal()
 atoms, ini = IFProc.getAtomsAndInitialCoords()
 s2, s2a = OFProc.getSpinAnnihilation()
@@ -29,7 +30,7 @@ zeroPt = str(zeroPt)
 if freeE == -1:
     freeE = 'Frequency calculation not performed'
 else:
-    freeE = str(freeE)+' kJ/mol'
+    freeE = str(freeE)
 if s2 == -1:
     s2 = 'No unpaired electrons'
     s2a = s2
@@ -43,8 +44,15 @@ with open('report.txt', 'w') as f:
     f.write('Route Card: '+routeCard+'\n')
     f.write('Optimized coordinates:\n'+coordList)
     f.write('\nZero Point Energy (Hartrees): '+zeroPt)
-    f.write('\nFree Energy: '+freeE)
-    f.write('\nNumber of imaginary frequencies: '+str(NImag))
+    f.write('\nFree Energy (Ha): '+freeE)
+    f.write('\nThermochemistry accounting for '+str(config.N_Freeze)+' constrained periphery atoms:')
+    f.write('\n\tFree Energy (Ha): '+str(constrainedG))
+    f.write('\n\tEnthalpy (Ha): '+str(constrainedH))
+    f.write('\n\tT*Entropy (Ha): '+str(constrainedTS))
+    f.write('\n\nNumber of imaginary frequencies: '+str(NImag))
+    if NImag >=1:
+        f.write('\nWARNING 1+ IMAGINARY FREQUENCIES. Ignore this if this is a TS and there is only one.\nOtherwise, check if modes are in constraint space, or follow the imaginary modes\n'
+                'If modes are not in constrainet space, thermochemistry (and everything else) IS WRONG\n')
     f.write('\nSpin contamination:\n')
     f.write('   Before: '+s2+'\n')
     f.write('   After: '+s2a)
