@@ -173,15 +173,15 @@ def getConstrainedThermochemistry():
 	kBT = T * 1.38064852E-23 / 4.35974465E-18
 	# Calculate thermal corrections, ignoring partition functions from translation and rotation, and vibration of heavy atoms
 	# q_rot = getLog_q(4)
-	# q_elec = getLog_q(2)
+	q_elec = getLog_q(2)
 	# q_trans = getLog_q(3)
 
 	q_rot = 0
-	q_elec = 0
+	# q_elec = 0
 	q_trans = 0
 
 	# Translation
-	St = (q_trans + 5 / 2.) * R
+	St = (q_trans + 5/2.)*R
 	Et = 3 / 2. * R * T
 
 	# Rotation
@@ -189,7 +189,7 @@ def getConstrainedThermochemistry():
 	Er = 3 / 2. * R * T
 
 	# Electronic (both are 0)
-	Se = 0
+	Se = R*q_elec
 	Ee = 0
 
 	# Vibration
@@ -303,7 +303,6 @@ def getMasses():
 	# Split up each row into list
 	lines = map(lambda x: x.split(), lines)
 	masses=[]
-	print IFProc.getNoHeavyAtoms()[1]
 	for x in range(0,config.N):
 		try:
 			masses.append( float(lines[x][-1]))

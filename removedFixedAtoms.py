@@ -65,3 +65,4 @@ print freq
 # Count number of imaginary frequencies
 boolarr = np.array(np.iscomplex(freq),dtype=np.bool)
 print "There are now "+str(np.sum(boolarr))+ " imaginary frequencies, but some might be small"
+
