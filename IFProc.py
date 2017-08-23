@@ -63,6 +63,7 @@ def getNoHeavyAtoms():
 	heavyMass=0
 	atoms = getAtomsAndInitialCoords()[0]
 	for x in xrange(len(atoms)):
+		# print atoms[x][-1]
 		if atoms[x][-1] == ')':
 			noHeavyAtoms += 1
 			heavyMass = atoms[x][atoms[x].find("(") + 1:atoms[x].find(")")]

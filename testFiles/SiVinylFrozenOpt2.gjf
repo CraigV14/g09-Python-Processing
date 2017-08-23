@@ -1,5 +1,5 @@
 %nprocshared=12
-#p opt=(modredundant,tight) int=grid=ultrafine wb97xd/gen nosymm geom=connectivity
+#p opt=(modredundant,tight,qTSt) int=grid=ultrafine wb97xd/gen nosymm geom=connectivity
 
 TS[F3SiO - H - C2H3]
 

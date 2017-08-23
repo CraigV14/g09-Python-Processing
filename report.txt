@@ -51,9 +51,9 @@ H(Iso=10000000)			-3.058420 0.287818 2.079215
 Zero Point Energy (Hartrees): -3010.14962037
 Free Energy (Ha): -3010.152453
 Thermochemistry accounting for 8 constrained periphery atoms:
-	Free Energy (Ha): -3009.91183241
-	Enthalpy (Ha): -3009.85622449
-	T*Entropy (Ha): 0.0556079193825
+	Free Energy (Ha): -3009.91143845
+	Enthalpy (Ha): -3009.85741859
+	T*Entropy (Ha): 0.0540198558889
 
 Number of imaginary frequencies: 1
 WARNING 1+ IMAGINARY FREQUENCIES. Ignore this if this is a TS and there is only one.

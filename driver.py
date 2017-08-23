@@ -32,10 +32,12 @@ CoM = np.ndarray.tolist(CoM)
 
 # Shift origin to COM
 centeredCoords = np.zeros((3,3))
+
 # squeezing and as array because I am bad at Python
 centeredCoords = np.squeeze(np.asarray([np.subtract(coords[x],CoM).flatten() for x in range(config.N)]))
-
-
+centeredCoords = np.multiply(centeredCoords,1./0.52917721067)
+# print centeredCoords
+# print
 # print coords
 inertiaTensor = np.zeros((3,3))
 
@@ -43,8 +45,7 @@ inertiaTensor = np.zeros((3,3))
 inertiaTensor[0,0] = np.sum(np.multiply(masses,(centeredCoords[:,1]**2+centeredCoords[:,2]**2)))
 inertiaTensor[1,1] = np.sum(np.multiply(masses,(centeredCoords[:,0]**2+centeredCoords[:,2]**2)))
 inertiaTensor[2,2] = np.sum(np.multiply(masses,(centeredCoords[:,1]**2+centeredCoords[:,0]**2)))
-
-# Off diagonals
+# Off diagonals + matrix are symmetric
 inertiaTensor[1,0] = -np.sum(np.multiply(np.multiply(masses,centeredCoords[:,1]),centeredCoords[:,0]))
 inertiaTensor[0,1] = inertiaTensor[1,0]
 inertiaTensor[2,0] = -np.sum(np.multiply(np.multiply(masses,centeredCoords[:,2]),centeredCoords[:,0]))
@@ -52,7 +53,7 @@ inertiaTensor[0,2] = inertiaTensor[2,0]
 inertiaTensor[2,1] = -np.sum(np.multiply(np.multiply(masses,centeredCoords[:,2]),centeredCoords[:,1]))
 inertiaTensor[1,2] = inertiaTensor[2,1]
 # Inertia tensor in AMU Ang**2 --> AMU Bohr**2
-inertiaTensor = np.multiply(inertiaTensor,1./0.52917721067**2)
+# inertiaTensor = np.multiply(inertiaTensor,1./0.52917721067**2)
 # Calcualte evals in AMU Bohr**2
 evals,evecs = np.linalg.eig(inertiaTensor)
 
@@ -67,25 +68,31 @@ for x in range(config.N):
     D1[3*x] = D1[3*x]+masses[x]
 D2 = np.roll(D1,1)
 D3 = np.roll(D1,2)
-print centeredCoords[0]
+# print centeredCoords[0]
 
 D4 = np.zeros((config.N,3))
-D5 = D4
-D6 = D4
-print evecs
-print centeredCoords[0]
+D5 = np.zeros((config.N,3))
+D6 = np.zeros((config.N,3))
+# print evecs
+# print centeredCoords[0]
+
 for i in range(1):
+    # Define Px, Py, and Pz for atom i
     Px = np.dot(centeredCoords[i], evecs[0])
     Pz = np.dot(centeredCoords[i], evecs[1])
     Py = np.dot(centeredCoords[i], evecs[2])
-
+    sqrt_mass = np.sqrt(masses[i/3])
     print Px,Pz,Py
     for j in range(3):
-        # print j
-        D4[i,j] = (Py*evecs[j,2]-Pz*evecs[j,1])/masses[i/3]
-        D5[i,j] = (Pz*evecs[j,0]-Px*evecs[j,2])/masses[i/3]
-        D6[i,j] = (Px*evecs[j,1]-Py*evecs[j,0])/masses[i/3]
+        # print evecs[j,1]
+        D4[i,j] = (Py*evecs[j,2]-Pz*evecs[j,1])/sqrt_mass
+        print D4[i,j]
+        D5[i,j] = (Pz*evecs[j,0]-Px*evecs[j,2])/sqrt_mass
+        # D6[i,j] = (Px*evecs[j,1]-Py*evecs[j,0])/np.sqrt(masses[i/3])
 
 # print D4
 # print D4.flatten()
-print D4
+print D4[0]
+print centeredCoords[0]
+
+print evecs[1,2],evecs[1,1]

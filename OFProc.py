@@ -1,5 +1,6 @@
 # RULES:
-# only freeze atoms through internal coordinates
+# only fix atoms through internal coordinates
+# Fixed/constrained atoms go at the end of the atom list
 import linecache
 import re
 import IFProc
@@ -74,7 +75,9 @@ def getModRedundantCoords():
 	return MRCoords
 
 def getHessian(type):
-	# returns hessian as a numpy array
+	# It is better to read the Hessian in from the fort.7 file obtained with the punch(derivatives) keyword
+	# It has more digits and the Hessian doesn't always output for large atom jobs in the output file.
+	# returns hessian as a numpy array.
 	# type = "internal" or "Cartesian"
 	f = open(outputFileName, "r")
 	hessian_data = []
@@ -164,56 +167,6 @@ def getFreeE():
 		freeE = -1
 	return freeE
 
-def getConstrainedThermochemistry():
-	freqList = getFreq()
-	T = getTemp()
-
-	vibTemp = [1.98644568E-25 * 100 / 1.38064852E-23 * w for w in freqList]
-	R = 8.314
-	kBT = T * 1.38064852E-23 / 4.35974465E-18
-	# Calculate thermal corrections, ignoring partition functions from translation and rotation, and vibration of heavy atoms
-	# q_rot = getLog_q(4)
-	q_elec = getLog_q(2)
-	# q_trans = getLog_q(3)
-
-	q_rot = 0
-	# q_elec = 0
-	q_trans = 0
-
-	# Translation
-	St = (q_trans + 5/2.)*R
-	Et = 3 / 2. * R * T
-
-	# Rotation
-	Sr = (q_rot + 3 / 2.) * R
-	Er = 3 / 2. * R * T
-
-	# Electronic (both are 0)
-	Se = R*q_elec
-	Ee = 0
-
-	# Vibration
-	Svk = [theta / T / (np.exp(theta / T) - 1) - np.log(1 - np.exp(-abs(theta) / T)) for theta in vibTemp]
-	Evk = [theta * (0.5 + 1. / (np.exp(theta / T) - 1.)) for theta in vibTemp]
-
-	Sv = R * sum(Svk[config.N_Freeze * 3:])
-	Ev = R * sum(Evk[config.N_Freeze * 3:])
-	# Thermal Corrections in Ha
-	Ecorrection = (Et + Er + Ee + Ev) / 1000 / 2625.499638
-	# Ha/K
-	S = (St + Sr + Se + Sv) / 1000 / 2625.499638
-
-	E = getZeroPtEnergy()
-
-	Ecorrected = E + Ecorrection
-
-	constrainedH = Ecorrected + kBT
-	constrainedTS = T * S
-	constrainedG = constrainedH - constrainedTS
-
-
-	return constrainedG, constrainedH,constrainedTS
-
 def getLog_q(type):
 	# returns the natural log of different components of the partition function
 	# type = 1 returns total (bot)
@@ -250,29 +203,31 @@ def getLog_q(type):
 	LnQ = split_line[0][3 + index]
 	return float(LnQ)
 
-def nearzerovib(N_fix):
-	# returns the sum of the natural log of the 3*number of fixed coordinate partition functions ( the lowest 3*N_freeze frequencies)
-	split_line = []
-	LnQ_nearzero = float(0)
+# Queued for removal
 
-	with open(outputFileName) as myFile:
-		for num, line in enumerate(myFile, 1):
-			if "Total Bot" in line:
-				line_num = num + 3
+# def nearzerovib(N_fix):
+# 	# returns the sum of the natural log of the 3*number of fixed coordinate partition functions ( the lowest 3*N_freeze frequencies)
+# 	split_line = []
+# 	LnQ_nearzero = float(0)
+#
+# 	with open(outputFileName) as myFile:
+# 		for num, line in enumerate(myFile, 1):
+# 			if "Total Bot" in line:
+# 				line_num = num + 3
+#
+# 	for i in range(0,3*N_fix):
+# 		line = linecache.getline(outputFileName, line_num + i)
+# 		split_line.append(line.split())
+# 		LnQ_nearzero = LnQ_nearzero + float(split_line[i][5])
+#
+# 	return LnQ_nearzero
 
-	for i in range(0,3*N_fix):
-		line = linecache.getline(outputFileName, line_num + i)
-		split_line.append(line.split())
-		LnQ_nearzero = LnQ_nearzero + float(split_line[i][5])
-
-	return LnQ_nearzero
-
-def removeFixedRotAndTrans_q():
-	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
-	T = getTemp()
-	K = 3.166841435013854E-06
-	correctedFreeE = getFreeE() - K*T*(getLog_q(1) - getLog_q(3) - getLog_q(4) - nearzerovib(6))
-	return correctedFreeE
+# def removeFixedRotAndTrans_q():
+# 	# Removes the energy contributions from the rotational and translational q's of the fixed atoms
+# 	T = getTemp()
+# 	K = 3.166841435013854E-06
+# 	correctedFreeE = getFreeE() - K*T*(getLog_q(1) - getLog_q(3) - getLog_q(4) - nearzerovib(6))
+# 	return correctedFreeE
 
 def getNoImagFreq():
 	with open(outputFileName) as f:
@@ -308,7 +263,10 @@ def getMasses():
 			masses.append( float(lines[x][-1]))
 		except ValueError:
 			if lines[x][-1]=='mass**********':
+
 				masses.append(float(IFProc.getNoHeavyAtoms()[1]))
+		if masses[x] == 0:
+			masses[x] =float(IFProc.getNoHeavyAtoms()[1])
 	return masses
 
 def getFreq():

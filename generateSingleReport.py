@@ -14,7 +14,7 @@ import OFProc
 routeCard = IFProc.getRoute()[0]
 optCoords = OFProc.getOptCoords()
 freeE = OFProc.getFreeE()
-constrainedG,constrainedH,constrainedTS = OFProc.getConstrainedThermochemistry()
+constrainedG,constrainedH,constrainedTS = OFProc.getConstrainedThermochemistry(OFProc.getFreq())
 normalTerm = OFProc.ifNormal()
 atoms, ini = IFProc.getAtomsAndInitialCoords()
 s2, s2a = OFProc.getSpinAnnihilation()

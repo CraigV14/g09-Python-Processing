@@ -25,5 +25,4 @@ def setN_Freeze():
     if N_Freeze == 0:
         N_Freeze = IFProc.getNoHeavyAtoms()[0]
 
-
     config.N_Freeze = N_Freeze
