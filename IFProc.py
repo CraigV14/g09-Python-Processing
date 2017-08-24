@@ -1,4 +1,4 @@
-import re
+
 import config
 import OFProc
 # Set N and inputFileName from config
@@ -8,6 +8,7 @@ N = config.N
 N_Freeze = config.N_Freeze
 def getRoute():
 	# Returns the title card as a list where each element is an option and its location
+	# a new comment
 	lookup = "#"
 	with open(inputFileName) as f:
 		for num, line in enumerate(f, 1):

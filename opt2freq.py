@@ -1,5 +1,6 @@
 import config
 import mod
+import numpy as np
 
 # config.outputFileName = "C:/Users/Craig/PycharmProjects/g09-Python-Processing/testFiles/IIIminus1.log"
 # config.inputFileName = "C:/Users/Craig/PycharmProjects/g09-Python-Processing/testFiles/IIIminus1.gjf"
@@ -31,12 +32,23 @@ frozenAtomList = OFProc.getNoFrozenAndFrozenList()[1]
 
 for i in range(config.N_Freeze):
     index = int(frozenAtomList[i])-1
-    atomList[index] += "(Iso=10000000)"
+    atomList[index] += "(Iso=100000000)"
 
 # Get the optimized coordinated
 optCoords = OFProc.getOptCoords()
+
+optCoords = np.array(["%.6f" % w for w in optCoords.reshape(optCoords.size)])
+optCoords = optCoords.reshape((config.N,3))
 # Generate the list of new frozen, optimized coordinates to do the frequency calculation on
-freqCoordList = [atomList[x]+'\t\t\t'+optCoords[x] for x in range(config.N)]
+freqCoordList = []
+blank = '          '
+for x in range(config.N):
+    # Make slice points so spacing is always equal
+    slice0 = 2-len(atomList[x])
+    slice1 = 9-len(optCoords[x][0])
+    slice2 = 12-len(optCoords[x][1])
+    slice3 = 12-len(optCoords[x][2])
+    freqCoordList.append(atomList[x] +blank[0:slice0] +"      "+blank[0:slice1]+ optCoords[x][0]+blank[0:slice2]+optCoords[x][1]+blank[0:slice3]+optCoords[x][2]+'\n')
 
 
 #########################

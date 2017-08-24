@@ -1,66 +1,22 @@
-Job details for: testFiles/2IIIFreq.log
+Job details for: testFiles/C2H4opt.log
 
 Normal termination? True
 
-Route Card: #p freq temp=373.15 uwb97xd/gen nosymm scf(qc,maxcycles=1000)
+Route Card: #p wb97xd/TZVP nosymm geom=connectivity opt freq temp=373.15 punch=derivatives
 
 Optimized coordinates:
-H			-2.421926 3.419013 3.291994
-H			2.917046 1.638354 6.345407
-H			1.330572 2.108494 6.969150
-H			2.607322 3.317216 6.799071
-H			3.849964 2.644399 3.580563
-H			3.480692 4.327789 3.944126
-H			2.774204 3.560447 2.517881
-H			1.735068 0.436098 3.773743
-H			0.609015 1.379613 2.784247
-H			0.102416 0.788364 4.356216
-H			-0.953957 7.501874 6.347886
-H			-1.079923 5.896717 7.080796
-H			-1.978101 6.270665 5.605261
-H			1.375815 6.892534 2.997231
-H			-0.352316 7.362839 3.145869
-H			2.139099 7.288173 6.155406
-H			2.909570 5.889229 5.405499
-H			2.074724 5.709139 6.953285
-C			0.181067 4.046921 4.561200
-H			-0.709038 3.585665 5.007908
-Si			1.584154 2.805586 4.580903
-Si			0.426468 5.850937 5.089078
-C			2.164195 2.430593 6.340678
-C			3.057959 3.397492 3.560041
-C			0.952085 1.197793 3.805960
-C			-1.034330 6.434472 6.131168
-C			0.386202 6.582921 3.340517
-C			2.044611 6.213456 5.985167
-Cr			-0.128750 4.760990 2.722213
-O			0.545402 4.119763 1.151050
-O			-2.012491 3.543595 2.431464
-O			-1.117931 2.241665 0.301322
-Si			-2.332641 2.267357 1.369592
-Si			0.358780 2.995599 0.016298
-O(Iso=10000000)			1.528661 1.824193 -0.017492
-O(Iso=10000000)			0.329600 3.677299 -1.481629
-O(Iso=10000000)			-3.798190 2.422088 0.623798
-O(Iso=10000000)			-2.438175 0.962776 2.368284
-H(Iso=10000000)			1.472018 1.113006 0.626407
-H(Iso=10000000)			0.721006 3.163209 -2.193283
-H(Iso=10000000)			-3.813801 2.949512 -0.179499
-H(Iso=10000000)			-3.058420 0.287818 2.079215
+C        0.240325    0.433425   -0.000007
+C        1.562978    0.433410    0.000000
+H       -0.328305    1.356423    0.000008
+H       -0.328325   -0.489562   -0.000025
+H        2.131608   -0.489589   -0.000013
+H        2.131628    1.356396    0.000021
 
-Zero Point Energy (Hartrees): -3010.14962037
-Free Energy (Ha): -3010.152453
-Thermochemistry accounting for 8 constrained periphery atoms:
-	Free Energy (Ha): -3009.91143845
-	Enthalpy (Ha): -3009.85741859
-	T*Entropy (Ha): 0.0540198558889
+Zero Point Energy (Hartrees): -78.5869159219
+Free Energy (Ha): -78.564414
 
-Number of imaginary frequencies: 1
-WARNING 1+ IMAGINARY FREQUENCIES. Ignore this if this is a TS and there is only one.
-Otherwise, check if modes are in constraint space, or follow the imaginary modes
-If modes are not in constrainet space, thermochemistry (and everything else) IS WRONG
-
+Number of imaginary frequencies: 0
 Spin contamination:
-   Before: 1.7017
-   After: 0.7762
+   Before: None
+   After: None
 -------------------------------------------------

@@ -1,3 +1,4 @@
+# The beginnings of generating the rotating and translating frame. Not super important atm
 import config
 import mod
 import cmath

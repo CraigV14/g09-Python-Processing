@@ -15,22 +15,24 @@ N_Freeze = config.N_Freeze
 
 ## OPTIMIZATION RELATED FUNCTIONS ##
 def getOptCoords():
-	# Searches the output file (outputFileName) and extracts the x,y,z positions of the optimized coordinates as a space
-	# separated list of strings
 
-	#Search string to find location of optimized coordinates
-	lookup = " Number     Number       Type             X           Y           Z"
-	#Open file, search for lookup, get line number
-	location = findLocation(lookup,False) + 1
+    # Searches the output file (outputFileName) and extracts the x,y,z positions of the optimized coordinates as a space
+    # separated list of strings
 
-	with open(outputFileName) as f:
-		coords = f.readlines()[location:location+config.N]
-	# Extract all numbers
-	nums = [re.findall(r"[-+]?\d*\.\d+|\d+",x) for x in coords]
-	#Parse just the (x,y,z) positions
-	parsedCoords = [nums[i][3]+" "+nums[i][4]+" "+nums[i][5]+"\n" for i in range(config.N)]
+    #Search string to find location of optimized coordinates
+    lookup = " Number     Number       Type             X           Y           Z"
+    #Open file, search for lookup, get line number
+    location = findLocation(lookup,False) + 1
 
-	return parsedCoords
+    with open(outputFileName) as f:
+        coords = f.readlines()[location:location+config.N]
+    # Extract all numbers
+    nums = [re.findall(r"[-+]?\d*\.\d+|\d+",x) for x in coords]
+    # Convert to np array
+    parsedCoords = np.array(nums).astype(np.float)
+
+    # Return just the xyz positions
+    return parsedCoords[:,3:]
 
 def getZeroPtEnergy():
 	location = -1
@@ -230,18 +232,22 @@ def getLog_q(type):
 # 	return correctedFreeE
 
 def getNoImagFreq():
-	with open(outputFileName) as f:
-		# Read in the whole file b/c there's no great way otherwise
-		line = f.read()
-
-	location = line.find('\NImag')
-	if location == -1:
-		noImFreq = -1
-	else:
-		noImFreq = int(line[location+7])
-	# Clear line since it reads in the whole damn file
-	del line
-	return noImFreq
+    location = -1
+    with open(outputFileName) as f:
+        # Read in the whole file b/c there's no great way otherwise
+        line = f.read()
+    # Gets rid of any possibility of \NImag being on a newline and everything breaking
+    line = line.replace('\n','')
+    line = line.replace(' ','')
+    location = line.find('\NImag')
+    temp = line[location+7]
+    if location == -1:
+        noImFreq = -1
+    else:
+        noImFreq = int(line[location+7])
+    # Clear line since it reads in the whole damn file
+    del line
+    return noImFreq
 
 def getMasses():
 	lookup = ' - Thermochemistry -'
