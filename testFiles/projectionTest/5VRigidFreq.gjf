@@ -1,5 +1,5 @@
 %nprocshared=12
-#p wb97xd/gen nosymm freq temp=373.15 punch=derivatives
+#p wb97xd/gen nosymm freq temp=373.15 punch=derivatives int=grid=ultrafine
 
 CrSite
 
